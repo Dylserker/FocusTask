@@ -1,0 +1,135 @@
+.home-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.hero {
+  text-align: center;
+  padding: 4rem 0;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.hero p {
+  font-size: 1.25rem;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  padding: 2rem 0;
+}
+
+.feature-card {
+  background: #f8f9fa;
+  padding: 2rem;
+  border-radius: 8px;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+}
+
+.feature-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.feature-card p {
+  color: #666;
+}
+
+/* Updates / Mises à jour */
+.updates {
+  margin-top: 1rem;
+  padding: 2rem 0 3rem;
+}
+
+.updates-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.updates-header h2 {
+  color: #333;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.8rem;
+  border-radius: 999px;
+  background: #eef1ff;
+  color: #667eea;
+  border: 1px solid #cfd6ff;
+}
+
+.updates-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.update-card {
+  background: white;
+  border: 2px solid #e1e8ed;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+}
+
+.update-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.update-date {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.update-title {
+  color: #333;
+  font-size: 1.1rem;
+  margin: 0.25rem 0 0.25rem;
+}
+
+.update-desc {
+  color: #666;
+  font-size: 0.95rem;
+}
+
+/* À propos */
+.about {
+  padding: 2rem 0 4rem;
+}
+
+.about h2 {
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.about p {
+  color: #666;
+  max-width: 800px;
+}
