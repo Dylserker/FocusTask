@@ -58,8 +58,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const response = await authService.login({ email, password });
       
-      if (response.success && response.data) {
-        const userData = response.data.user;
+      if (response.status === 'success' && response.data) {
+        const userData = {
+          id: response.data.id,
+          username: response.data.username,
+          email: response.data.email,
+          level: response.data.level || 1,
+          experience: response.data.totalPoints || 0,
+        };
+        
         setUser(userData);
         setIsAuthenticated(true);
         setUserName(userData.username);
@@ -78,8 +85,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const response = await authService.register({ username, email, password });
       
-      if (response.success && response.data) {
-        const userData = response.data.user;
+      if (response.status === 'success' && response.data) {
+        const userData = {
+          id: response.data.id,
+          username: response.data.username,
+          email: response.data.email,
+          level: response.data.level || 1,
+          experience: response.data.totalPoints || 0,
+        };
+        
         setUser(userData);
         setIsAuthenticated(true);
         setUserName(userData.username);

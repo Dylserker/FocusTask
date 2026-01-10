@@ -28,7 +28,7 @@ const Login = () => {
       // Appeler la fonction login du contexte avec le backend
       await login(email, password);
       
-      // Rediriger vers l'accueil
+      // Rediriger vers la page d'accueil après connexion réussie
       navigate('/');
     } catch (err: any) {
       // Gérer les erreurs de connexion

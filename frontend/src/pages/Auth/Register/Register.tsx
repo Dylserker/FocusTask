@@ -35,7 +35,7 @@ const Register = () => {
       // Appeler la fonction register du contexte avec le backend
       await register(username, email, password);
       
-      // Rediriger vers l'accueil après inscription réussie
+      // Rediriger vers la page d'accueil après inscription réussie
       navigate('/');
     } catch (err: any) {
       // Gérer les erreurs d'inscription

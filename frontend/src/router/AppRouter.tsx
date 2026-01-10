@@ -13,7 +13,7 @@ import ProtectedRoute from './ProtectedRoute';
 const AppRouter = () => {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<ProtectedRoute element={<Home />} />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/tasks" element={<ProtectedRoute element={<Tasks />} />} />

@@ -13,18 +13,18 @@ export interface RegisterData {
 }
 
 export interface AuthResponse {
-  success: boolean;
-  data: {
-    token: string;
-    user: {
-      id: number;
-      username: string;
-      email: string;
-      level: number;
-      experience: number;
-    };
-  };
+  status: string;
   message?: string;
+  data: {
+    id: number;
+    username: string;
+    email: string;
+    firstName?: string;
+    lastName?: string;
+    level: number;
+    totalPoints?: number;
+  };
+  token: string;
 }
 
 export interface User {
@@ -45,10 +45,10 @@ export const authService = {
     const response = await api.post<AuthResponse>('/auth/login', credentials);
     
     // Stocker le token dans localStorage
-    if (response.success && response.data.token) {
-      localStorage.setItem('authToken', response.data.token);
+    if (response.status === 'success' && response.token) {
+      localStorage.setItem('authToken', response.token);
       localStorage.setItem('isAuthenticated', 'true');
-      localStorage.setItem('user', JSON.stringify(response.data.user));
+      localStorage.setItem('user', JSON.stringify(response.data));
     }
     
     return response;
@@ -61,10 +61,10 @@ export const authService = {
     const response = await api.post<AuthResponse>('/auth/register', data);
     
     // Stocker le token dans localStorage
-    if (response.success && response.data.token) {
-      localStorage.setItem('authToken', response.data.token);
+    if (response.status === 'success' && response.token) {
+      localStorage.setItem('authToken', response.token);
       localStorage.setItem('isAuthenticated', 'true');
-      localStorage.setItem('user', JSON.stringify(response.data.user));
+      localStorage.setItem('user', JSON.stringify(response.data));
     }
     
     return response;
