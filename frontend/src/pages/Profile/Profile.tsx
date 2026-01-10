@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useAuth } from '../../context/AuthContext';
+import { userService } from '../../services';
 import ProfileEditModal from '../../components/Modal/ModalProfileEdit/ProfileEditModal';
 import './Profile.css';
 
@@ -16,27 +18,92 @@ type UserProfile = {
 };
 
 const Profile = () => {
+  const { user: authUser, userLevel, experiencePercent, refreshUserData } = useAuth();
   const [user, setUser] = useState<UserProfile>({
     username: 'Utilisateur',
     email: 'user@example.com',
-    firstName: 'Jane',
-    lastName: 'Doe',
+    firstName: '',
+    lastName: '',
     photoUrl: '',
-    joinDate: '2026-01-01',
-    tasksCompleted: 15,
-    currentStreak: 3,
-    level: 5,
-    experiencePercent: 65,
+    joinDate: new Date().toISOString(),
+    tasksCompleted: 0,
+    currentStreak: 0,
+    level: 1,
+    experiencePercent: 0,
   });
-
+  const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleSaveProfile = (
+  // Charger les données du profil et les stats
+  useEffect(() => {
+    const loadProfileData = async () => {
+      try {
+        setLoading(true);
+        
+        // Le profil contient déjà les stats
+        const profileData = await userService.getProfile();
+
+        setUser({
+          username: profileData.username,
+          email: profileData.email,
+          firstName: profileData.firstName || '',
+          lastName: profileData.lastName || '',
+          photoUrl: profileData.photoUrl || '',
+          joinDate: profileData.joinDate || profileData.createdAt || new Date().toISOString(),
+          tasksCompleted: profileData.tasksCompleted || 0,
+          currentStreak: profileData.currentStreak || 0,
+          level: profileData.level || userLevel,
+          experiencePercent: profileData.experiencePercent || experiencePercent,
+        });
+      } catch (error) {
+        console.error('Erreur lors du chargement du profil:', error);
+        // Utiliser les données du contexte en cas d'erreur
+        if (authUser) {
+          setUser(prev => ({
+            ...prev,
+            username: authUser.username,
+            email: authUser.email,
+            level: userLevel,
+            experiencePercent: experiencePercent,
+          }));
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProfileData();
+  }, [authUser, userLevel, experiencePercent]);
+
+  const handleSaveProfile = async (
     payload: Pick<UserProfile, 'username' | 'email' | 'firstName' | 'lastName' | 'photoUrl'>,
   ) => {
-    setUser((prev) => ({ ...prev, ...payload }));
-    setIsModalOpen(false);
+    try {
+      // Mettre à jour le profil via l'API
+      await userService.updateProfile({
+        username: payload.username,
+        email: payload.email,
+      });
+
+      // Rafraîchir les données utilisateur
+      await refreshUserData();
+
+      // Mettre à jour l'état local
+      setUser((prev) => ({ ...prev, ...payload }));
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour du profil:', error);
+      alert('Erreur lors de la mise à jour du profil');
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="profile-container">
+        <div className="loading">Chargement du profil...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="profile-container">

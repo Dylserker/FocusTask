@@ -5,8 +5,16 @@ export interface User {
   id: number;
   username: string;
   email: string;
+  firstName?: string;
+  lastName?: string;
+  photoUrl?: string;
+  joinDate?: string;
   level: number;
-  experience: number;
+  experiencePoints?: number;
+  experiencePercent?: number;
+  tasksCompleted?: number;
+  currentStreak?: number;
+  totalPoints?: number;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -14,6 +22,9 @@ export interface User {
 export interface UpdateUserData {
   username?: string;
   email?: string;
+  firstName?: string;
+  lastName?: string;
+  photoUrl?: string;
 }
 
 export interface ChangePasswordData {
@@ -38,7 +49,7 @@ export const userService = {
    * Récupération du profil utilisateur
    */
   async getProfile(): Promise<User> {
-    const response = await api.get<{ success: boolean; data: User }>('/users/profile');
+    const response = await api.get<{ status: string; data: User }>('/users/profile');
     return response.data;
   },
 
@@ -46,7 +57,7 @@ export const userService = {
    * Mise à jour du profil utilisateur
    */
   async updateProfile(data: UpdateUserData): Promise<User> {
-    const response = await api.put<{ success: boolean; data: User }>('/users/profile', data);
+    const response = await api.patch<{ status: string; data: User }>('/users/profile', data);
     
     // Mettre à jour les données stockées localement
     const storedUser = localStorage.getItem('user');
@@ -70,7 +81,7 @@ export const userService = {
    * Récupération des statistiques de l'utilisateur
    */
   async getStats(): Promise<UserStats> {
-    const response = await api.get<{ success: boolean; data: UserStats }>('/users/stats');
+    const response = await api.get<{ status: string; data: UserStats }>('/users/stats');
     return response.data;
   },
 
