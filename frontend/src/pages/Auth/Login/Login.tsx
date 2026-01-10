@@ -9,10 +9,11 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!email || !password) {
@@ -20,12 +21,22 @@ const Login = () => {
       return;
     }
 
-    // Appeler la fonction login du contexte
-    const userName = email.split('@')[0]; // Utiliser la partie avant @ comme nom d'utilisateur
-    login(email, userName);
+    setError('');
+    setLoading(true);
 
-    // Rediriger vers l'accueil
-    navigate('/');
+    try {
+      // Appeler la fonction login du contexte avec le backend
+      await login(email, password);
+      
+      // Rediriger vers l'accueil
+      navigate('/');
+    } catch (err: any) {
+      // Gérer les erreurs de connexion
+      const errorMessage = err?.response?.data?.message || err?.message || 'Erreur lors de la connexion';
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -43,6 +54,7 @@ const Login = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="votre@email.com"
+              disabled={loading}
             />
           </div>
           <div className="form-group">
@@ -54,10 +66,11 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="••••••••"
+              disabled={loading}
             />
           </div>
-          <button type="submit" className="btn btn-primary btn-full">
-            Se connecter
+          <button type="submit" className="btn btn-primary btn-full" disabled={loading}>
+            {loading ? 'Connexion en cours...' : 'Se connecter'}
           </button>
         </form>
         <p className="auth-link">
@@ -69,3 +82,4 @@ const Login = () => {
 };
 
 export default Login;
+

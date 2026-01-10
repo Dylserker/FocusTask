@@ -16,8 +16,25 @@ dotenv.config();
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware global
-app.use(cors());
+// Configuration CORS sécurisée
+const allowedOrigins = process.env.FRONTEND_URL?.split(',') || ['http://localhost:5173'];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Permet les requêtes sans origin (comme les apps mobiles ou Postman)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true, // Permet l'envoi de cookies et d'en-têtes d'authentification
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(requestLogger);

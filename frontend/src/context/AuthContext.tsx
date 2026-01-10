@@ -1,12 +1,18 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { authService, type User } from '../services/authService';
+import { userService } from '../services/userService';
 
 interface AuthContextType {
   isAuthenticated: boolean;
+  user: User | null;
   userName: string;
   userLevel: number;
   experiencePercent: number;
-  login: (email: string, name: string) => void;
+  loading: boolean;
+  login: (email: string, password: string) => Promise<void>;
+  register: (username: string, email: string, password: string) => Promise<void>;
   logout: () => void;
+  refreshUserData: () => Promise<void>;
   setUserData: (data: { userName: string; userLevel: number; experiencePercent: number }) => void;
 }
 
@@ -14,52 +20,99 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const [userName, setUserName] = useState('Utilisateur');
   const [userLevel, setUserLevel] = useState(1);
   const [experiencePercent, setExperiencePercent] = useState(0);
+  const [loading, setLoading] = useState(true);
 
-  // Vérifie si l'utilisateur est connecté au chargement
+  // Vérifie si l'utilisateur est connecté au chargement et récupère ses données
   useEffect(() => {
-    const storedAuth = localStorage.getItem('isAuthenticated');
-    const storedUserName = localStorage.getItem('userName');
-    const storedUserLevel = localStorage.getItem('userLevel');
-    const storedExperiencePercent = localStorage.getItem('experiencePercent');
+    const initAuth = async () => {
+      try {
+        const isAuth = authService.isAuthenticated();
+        
+        if (isAuth) {
+          // Récupérer les données utilisateur depuis le backend
+          const userData = await authService.getCurrentUser();
+          setUser(userData);
+          setIsAuthenticated(true);
+          setUserName(userData.username);
+          setUserLevel(userData.level);
+          setExperiencePercent(userService.calculateExperiencePercent(userData.experience, userData.level));
+        }
+      } catch (error) {
+        console.error('Erreur lors de la vérification de l\'authentification:', error);
+        // En cas d'erreur, nettoyer les données d'authentification
+        authService.logout();
+        setIsAuthenticated(false);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    if (storedAuth === 'true') {
-      setIsAuthenticated(true);
-      storedUserName && setUserName(storedUserName);
-      storedUserLevel && setUserLevel(parseInt(storedUserLevel));
-      storedExperiencePercent && setExperiencePercent(parseInt(storedExperiencePercent));
-    }
+    initAuth();
   }, []);
 
-  const login = (email: string, name: string) => {
-    // TODO: Implémenter l'authentification avec le backend
-    setIsAuthenticated(true);
-    setUserName(name);
-    setUserLevel(1);
-    setExperiencePercent(0);
+  const login = async (email: string, password: string) => {
+    try {
+      const response = await authService.login({ email, password });
+      
+      if (response.success && response.data) {
+        const userData = response.data.user;
+        setUser(userData);
+        setIsAuthenticated(true);
+        setUserName(userData.username);
+        setUserLevel(userData.level);
+        setExperiencePercent(userService.calculateExperiencePercent(userData.experience, userData.level));
+      } else {
+        throw new Error(response.message || 'Échec de la connexion');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la connexion:', error);
+      throw error;
+    }
+  };
 
-    // Stocker les données en localStorage
-    localStorage.setItem('isAuthenticated', 'true');
-    localStorage.setItem('userEmail', email);
-    localStorage.setItem('userName', name);
-    localStorage.setItem('userLevel', '1');
-    localStorage.setItem('experiencePercent', '0');
+  const register = async (username: string, email: string, password: string) => {
+    try {
+      const response = await authService.register({ username, email, password });
+      
+      if (response.success && response.data) {
+        const userData = response.data.user;
+        setUser(userData);
+        setIsAuthenticated(true);
+        setUserName(userData.username);
+        setUserLevel(userData.level);
+        setExperiencePercent(userService.calculateExperiencePercent(userData.experience, userData.level));
+      } else {
+        throw new Error(response.message || 'Échec de l\'inscription');
+      }
+    } catch (error) {
+      console.error('Erreur lors de l\'inscription:', error);
+      throw error;
+    }
   };
 
   const logout = () => {
+    authService.logout();
     setIsAuthenticated(false);
+    setUser(null);
     setUserName('Utilisateur');
     setUserLevel(1);
     setExperiencePercent(0);
+  };
 
-    // Supprimer les données du localStorage
-    localStorage.removeItem('isAuthenticated');
-    localStorage.removeItem('userEmail');
-    localStorage.removeItem('userName');
-    localStorage.removeItem('userLevel');
-    localStorage.removeItem('experiencePercent');
+  const refreshUserData = async () => {
+    try {
+      const userData = await authService.getCurrentUser();
+      setUser(userData);
+      setUserName(userData.username);
+      setUserLevel(userData.level);
+      setExperiencePercent(userService.calculateExperiencePercent(userData.experience, userData.level));
+    } catch (error) {
+      console.error('Erreur lors du rafraîchissement des données utilisateur:', error);
+    }
   };
 
   const setUserData = (data: { userName: string; userLevel: number; experiencePercent: number }) => {
@@ -76,11 +129,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     <AuthContext.Provider
       value={{
         isAuthenticated,
+        user,
         userName,
         userLevel,
         experiencePercent,
+        loading,
         login,
+        register,
         logout,
+        refreshUserData,
         setUserData,
       }}
     >
