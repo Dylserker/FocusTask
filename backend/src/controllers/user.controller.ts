@@ -42,8 +42,26 @@ export class UserController {
       throw new AppError(401, 'Non authentifié');
     }
 
-    const { firstName, lastName, photoUrl } = req.body;
+    const { username, email, firstName, lastName, photoUrl } = req.body;
     const updateData: any = {};
+
+    // Vérifier si l'email est déjà utilisé par un autre utilisateur
+    if (email !== undefined) {
+      const existingUser = await userService.getUserByEmail(email);
+      if (existingUser && existingUser.id !== req.userId) {
+        throw new AppError(400, 'Cet email est déjà utilisé');
+      }
+      updateData.email = email;
+    }
+
+    // Vérifier si le username est déjà utilisé par un autre utilisateur
+    if (username !== undefined) {
+      const existingUser = await userService.getUserByUsername(username);
+      if (existingUser && existingUser.id !== req.userId) {
+        throw new AppError(400, 'Ce nom d\'utilisateur est déjà utilisé');
+      }
+      updateData.username = username;
+    }
 
     if (firstName !== undefined) updateData.first_name = firstName;
     if (lastName !== undefined) updateData.last_name = lastName;
@@ -59,6 +77,7 @@ export class UserController {
       data: {
         id: user?.id,
         username: user?.username,
+        email: user?.email,
         firstName: user?.first_name,
         lastName: user?.last_name,
         photoUrl: user?.photo_url,

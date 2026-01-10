@@ -37,11 +37,13 @@ type ProfileEditModalProps = {
   isOpen: boolean;
   user: EditableUserProfile;
   onClose: () => void;
-  onSave: (payload: Pick<EditableUserProfile, 'firstName' | 'lastName' | 'photoUrl'>) => void;
+  onSave: (payload: EditableUserProfile) => void;
   loading?: boolean;
 };
 
 const ProfileEditModal = ({ isOpen, user, onClose, onSave, loading }: ProfileEditModalProps) => {
+  const [username, setUsername] = useState(user.username);
+  const [email, setEmail] = useState(user.email);
   const [firstName, setFirstName] = useState(user.firstName);
   const [lastName, setLastName] = useState(user.lastName);
   const [photoUrl, setPhotoUrl] = useState(user.photoUrl ?? galleryOptions[0].url);
@@ -49,17 +51,22 @@ const ProfileEditModal = ({ isOpen, user, onClose, onSave, loading }: ProfileEdi
 
   useEffect(() => {
     if (isOpen) {
+      setUsername(user.username);
+      setEmail(user.email);
       setFirstName(user.firstName);
       setLastName(user.lastName);
       setPhotoUrl(user.photoUrl ?? galleryOptions[0].url);
       setShowGallery(false);
     }
-  }, [isOpen, user.firstName, user.lastName, user.photoUrl]);
+  }, [isOpen, user.username, user.email, user.firstName, user.lastName, user.photoUrl]);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    if (!username.trim() || !email.trim()) return;
 
     onSave({
+      username: username.trim(),
+      email: email.trim(),
       firstName: firstName.trim(),
       lastName: lastName.trim(),
       photoUrl: photoUrl.trim(),
@@ -84,14 +91,13 @@ const ProfileEditModal = ({ isOpen, user, onClose, onSave, loading }: ProfileEdi
             <input
               id="profile-username"
               type="text"
-              value={user.username}
-              disabled
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               placeholder="Votre pseudo"
-              style={{ backgroundColor: '#f3f4f6', cursor: 'not-allowed' }}
+              required
+              disabled={loading}
+              autoFocus
             />
-            <small style={{ color: '#6b7280', fontSize: '0.875rem' }}>
-              Le nom d'utilisateur ne peut pas être modifié
-            </small>
           </div>
 
           <div className="profile-modal__group">
@@ -99,14 +105,12 @@ const ProfileEditModal = ({ isOpen, user, onClose, onSave, loading }: ProfileEdi
             <input
               id="profile-email"
               type="email"
-              value={user.email}
-              disabled
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="vous@example.com"
-              style={{ backgroundColor: '#f3f4f6', cursor: 'not-allowed' }}
+              required
+              disabled={loading}
             />
-            <small style={{ color: '#6b7280', fontSize: '0.875rem' }}>
-              L'email ne peut pas être modifié
-            </small>
           </div>
 
           <div className="profile-modal__row">

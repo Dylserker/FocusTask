@@ -77,21 +77,28 @@ const Profile = () => {
   }, [authUser, userLevel, experiencePercent]);
 
   const handleSaveProfile = async (
-    payload: Pick<UserProfile, 'firstName' | 'lastName' | 'photoUrl'>,
+    payload: Pick<UserProfile, 'username' | 'email' | 'firstName' | 'lastName' | 'photoUrl'>,
   ) => {
     try {
       setIsSaving(true);
       
       // Mettre à jour le profil via l'API
       const updatedUser = await userService.updateProfile({
+        username: payload.username,
+        email: payload.email,
         firstName: payload.firstName,
         lastName: payload.lastName,
         photoUrl: payload.photoUrl,
       });
 
+      // Rafraîchir les données utilisateur dans le contexte
+      await refreshUserData();
+
       // Mettre à jour l'état local avec les nouvelles données
       setUser((prev) => ({
         ...prev,
+        username: updatedUser.username || prev.username,
+        email: updatedUser.email || prev.email,
         firstName: updatedUser.firstName || '',
         lastName: updatedUser.lastName || '',
         photoUrl: updatedUser.photoUrl || '',
