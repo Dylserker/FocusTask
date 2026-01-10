@@ -37,12 +37,11 @@ type ProfileEditModalProps = {
   isOpen: boolean;
   user: EditableUserProfile;
   onClose: () => void;
-  onSave: (payload: EditableUserProfile) => void;
+  onSave: (payload: Pick<EditableUserProfile, 'firstName' | 'lastName' | 'photoUrl'>) => void;
+  loading?: boolean;
 };
 
-const ProfileEditModal = ({ isOpen, user, onClose, onSave }: ProfileEditModalProps) => {
-  const [username, setUsername] = useState(user.username);
-  const [email, setEmail] = useState(user.email);
+const ProfileEditModal = ({ isOpen, user, onClose, onSave, loading }: ProfileEditModalProps) => {
   const [firstName, setFirstName] = useState(user.firstName);
   const [lastName, setLastName] = useState(user.lastName);
   const [photoUrl, setPhotoUrl] = useState(user.photoUrl ?? galleryOptions[0].url);
@@ -50,22 +49,17 @@ const ProfileEditModal = ({ isOpen, user, onClose, onSave }: ProfileEditModalPro
 
   useEffect(() => {
     if (isOpen) {
-      setUsername(user.username);
-      setEmail(user.email);
       setFirstName(user.firstName);
       setLastName(user.lastName);
       setPhotoUrl(user.photoUrl ?? galleryOptions[0].url);
       setShowGallery(false);
     }
-  }, [isOpen, user.email, user.firstName, user.lastName, user.photoUrl, user.username]);
+  }, [isOpen, user.firstName, user.lastName, user.photoUrl]);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    if (!username.trim() || !email.trim()) return;
 
     onSave({
-      username: username.trim(),
-      email: email.trim(),
       firstName: firstName.trim(),
       lastName: lastName.trim(),
       photoUrl: photoUrl.trim(),
@@ -90,12 +84,14 @@ const ProfileEditModal = ({ isOpen, user, onClose, onSave }: ProfileEditModalPro
             <input
               id="profile-username"
               type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={user.username}
+              disabled
               placeholder="Votre pseudo"
-              required
-              autoFocus
+              style={{ backgroundColor: '#f3f4f6', cursor: 'not-allowed' }}
             />
+            <small style={{ color: '#6b7280', fontSize: '0.875rem' }}>
+              Le nom d'utilisateur ne peut pas être modifié
+            </small>
           </div>
 
           <div className="profile-modal__group">
@@ -103,11 +99,14 @@ const ProfileEditModal = ({ isOpen, user, onClose, onSave }: ProfileEditModalPro
             <input
               id="profile-email"
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={user.email}
+              disabled
               placeholder="vous@example.com"
-              required
+              style={{ backgroundColor: '#f3f4f6', cursor: 'not-allowed' }}
             />
+            <small style={{ color: '#6b7280', fontSize: '0.875rem' }}>
+              L'email ne peut pas être modifié
+            </small>
           </div>
 
           <div className="profile-modal__row">
@@ -119,6 +118,7 @@ const ProfileEditModal = ({ isOpen, user, onClose, onSave }: ProfileEditModalPro
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 placeholder="Jane"
+                disabled={loading}
               />
             </div>
             <div className="profile-modal__group">
@@ -129,6 +129,7 @@ const ProfileEditModal = ({ isOpen, user, onClose, onSave }: ProfileEditModalPro
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 placeholder="Doe"
+                disabled={loading}
               />
             </div>
           </div>
@@ -167,11 +168,11 @@ const ProfileEditModal = ({ isOpen, user, onClose, onSave }: ProfileEditModalPro
           </div>
 
           <div className="profile-modal__actions">
-            <button type="button" className="btn btn-secondary" onClick={onClose}>
+            <button type="button" className="btn btn-secondary" onClick={onClose} disabled={loading}>
               Annuler
             </button>
-            <button type="submit" className="btn btn-primary">
-              Enregistrer
+            <button type="submit" className="btn btn-primary" disabled={loading}>
+              {loading ? 'Enregistrement...' : 'Enregistrer'}
             </button>
           </div>
         </form>

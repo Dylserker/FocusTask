@@ -33,6 +33,7 @@ const Profile = () => {
   });
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   // Charger les données du profil et les stats
   useEffect(() => {
@@ -76,24 +77,36 @@ const Profile = () => {
   }, [authUser, userLevel, experiencePercent]);
 
   const handleSaveProfile = async (
-    payload: Pick<UserProfile, 'username' | 'email' | 'firstName' | 'lastName' | 'photoUrl'>,
+    payload: Pick<UserProfile, 'firstName' | 'lastName' | 'photoUrl'>,
   ) => {
     try {
+      setIsSaving(true);
+      
       // Mettre à jour le profil via l'API
-      await userService.updateProfile({
-        username: payload.username,
-        email: payload.email,
+      const updatedUser = await userService.updateProfile({
+        firstName: payload.firstName,
+        lastName: payload.lastName,
+        photoUrl: payload.photoUrl,
       });
 
-      // Rafraîchir les données utilisateur
-      await refreshUserData();
-
-      // Mettre à jour l'état local
-      setUser((prev) => ({ ...prev, ...payload }));
+      // Mettre à jour l'état local avec les nouvelles données
+      setUser((prev) => ({
+        ...prev,
+        firstName: updatedUser.firstName || '',
+        lastName: updatedUser.lastName || '',
+        photoUrl: updatedUser.photoUrl || '',
+      }));
+      
       setIsModalOpen(false);
-    } catch (error) {
+      
+      // Message de succès
+      alert('Profil mis à jour avec succès !');
+    } catch (error: any) {
       console.error('Erreur lors de la mise à jour du profil:', error);
-      alert('Erreur lors de la mise à jour du profil');
+      const errorMessage = error?.response?.data?.message || 'Erreur lors de la mise à jour du profil';
+      alert(errorMessage);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -186,6 +199,7 @@ const Profile = () => {
         user={user}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSaveProfile}
+        loading={isSaving}
       />
     </div>
   );
