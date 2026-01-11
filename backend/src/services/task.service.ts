@@ -2,12 +2,31 @@ import pool from '../config/database';
 import type { Task } from '../types';
 
 export class TaskService {
+  /**
+   * Formater une tâche pour l'API en incluant le status
+   * La date est déjà au format YYYY-MM-DD grâce au DATE_FORMAT en SQL
+   */
+  private formatTask(task: any): any {
+    // Assurer que la date reste au format string YYYY-MM-DD
+    let dateStr = task.date;
+    if (typeof dateStr !== 'string') {
+      dateStr = String(dateStr);
+    }
+    
+    return {
+      ...task,
+      date: dateStr,
+      status: task.status || (task.completed ? 'completed' : 'pending'),
+    };
+  }
+
   async getTaskById(taskId: number): Promise<Task | null> {
     const [rows] = await pool.query(
-      'SELECT * FROM Tasks WHERE id = ?',
+      `SELECT *, DATE_FORMAT(date, '%Y-%m-%d') as date FROM Tasks WHERE id = ?`,
       [taskId]
     );
-    return (rows as Task[])[0] || null;
+    const task = (rows as Task[])[0] || null;
+    return task ? this.formatTask(task) : null;
   }
 
   async getTasksByUserId(
@@ -16,18 +35,18 @@ export class TaskService {
     offset: number = 0
   ): Promise<Task[]> {
     const [rows] = await pool.query(
-      'SELECT * FROM Tasks WHERE user_id = ? ORDER BY date DESC LIMIT ? OFFSET ?',
+      `SELECT *, DATE_FORMAT(date, '%Y-%m-%d') as date FROM Tasks WHERE user_id = ? ORDER BY date DESC LIMIT ? OFFSET ?`,
       [userId, limit, offset]
     );
-    return rows as Task[];
+    return (rows as Task[]).map(task => this.formatTask(task));
   }
 
   async getTasksByUserAndDate(userId: number, date: string): Promise<Task[]> {
     const [rows] = await pool.query(
-      'SELECT * FROM Tasks WHERE user_id = ? AND date = ? ORDER BY created_at',
+      `SELECT *, DATE_FORMAT(date, '%Y-%m-%d') as date FROM Tasks WHERE user_id = ? AND date = ? ORDER BY created_at`,
       [userId, date]
     );
-    return rows as Task[];
+    return (rows as Task[]).map(task => this.formatTask(task));
   }
 
   async createTask(
@@ -48,8 +67,11 @@ export class TaskService {
     const updates: string[] = [];
     const values: any[] = [];
 
+    // Colonnes valides qu'on peut updater
+    const validColumns = ['name', 'description', 'difficulty', 'date', 'completed', 'status'];
+
     Object.entries(data).forEach(([key, value]) => {
-      if (value !== undefined && key !== 'id' && key !== 'created_at') {
+      if (value !== undefined && validColumns.includes(key)) {
         updates.push(`${key} = ?`);
         values.push(value);
       }
@@ -58,10 +80,29 @@ export class TaskService {
     if (updates.length === 0) return;
 
     values.push(taskId);
-    await pool.query(
-      `UPDATE Tasks SET ${updates.join(', ')} WHERE id = ?`,
-      values
-    );
+    const query = `UPDATE Tasks SET ${updates.join(', ')} WHERE id = ?`;
+    console.log('DEBUG updateTask:', { query, values, taskId });
+    
+    try {
+      await pool.query(query, values);
+    } catch (error: any) {
+      console.error('ERROR in updateTask:', error.message, error.code);
+      // Si erreur "colonne inconnue" pour status, retry sans status
+      if (error.code === 'ER_BAD_FIELD_ERROR' && updates.some(u => u.includes('status'))) {
+        const updatesWithoutStatus = updates.filter(u => !u.includes('status'));
+        const valuesWithoutStatus = values.slice(0, -values.length + updatesWithoutStatus.length);
+        valuesWithoutStatus.push(taskId);
+        
+        if (updatesWithoutStatus.length > 0) {
+          await pool.query(
+            `UPDATE Tasks SET ${updatesWithoutStatus.join(', ')} WHERE id = ?`,
+            valuesWithoutStatus
+          );
+        }
+      } else {
+        throw error;
+      }
+    }
   }
 
   async completeTask(taskId: number): Promise<void> {
@@ -78,10 +119,10 @@ export class TaskService {
 
   async getTodayTasks(userId: number): Promise<Task[]> {
     const [rows] = await pool.query(
-      'SELECT * FROM TodayTasks WHERE id = (SELECT id FROM Tasks WHERE user_id = ?)',
+      `SELECT *, DATE_FORMAT(date, '%Y-%m-%d') as date FROM Tasks WHERE user_id = ? AND DATE(date) = CURDATE()`,
       [userId]
     );
-    return rows as Task[];
+    return (rows as Task[]).map(task => this.formatTask(task));
   }
 
   async getCompletedTasksCount(userId: number): Promise<number> {

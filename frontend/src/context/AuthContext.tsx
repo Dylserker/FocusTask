@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { authService, type User } from '../services/authService';
+import { authService, type AuthUser } from '../services/authService';
 import { userService } from '../services/userService';
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  user: User | null;
+  user: AuthUser | null;
   userName: string;
   userLevel: number;
   experiencePercent: number;
@@ -20,7 +20,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [userName, setUserName] = useState('Utilisateur');
   const [userLevel, setUserLevel] = useState(1);
   const [experiencePercent, setExperiencePercent] = useState(0);

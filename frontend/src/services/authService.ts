@@ -27,7 +27,7 @@ export interface AuthResponse {
   token: string;
 }
 
-export interface User {
+export interface AuthUser {
   id: number;
   username: string;
   email: string;
@@ -88,8 +88,8 @@ export const authService = {
   /**
    * Récupération de l'utilisateur courant
    */
-  async getCurrentUser(): Promise<User> {
-    return await api.get<User>('/auth/me');
+  async getCurrentUser(): Promise<AuthUser> {
+    return await api.get<AuthUser>('/auth/me');
   },
 
   /**
@@ -111,7 +111,7 @@ export const authService = {
   /**
    * Récupération des données utilisateur stockées
    */
-  getStoredUser(): User | null {
+  getStoredUser(): AuthUser | null {
     const userStr = localStorage.getItem('user');
     return userStr ? JSON.parse(userStr) : null;
   },

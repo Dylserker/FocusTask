@@ -45,10 +45,14 @@ export class TaskController {
       throw new AppError(401, 'Non authentifié');
     }
 
-    const { name, description, difficulty, date } = req.body;
+    // Support à la fois les anciens champs (name, difficulty, date) et les nouveaux (title, priority, dueDate)
+    const name = req.body.name || req.body.title;
+    const description = req.body.description;
+    const difficulty = req.body.difficulty || (req.body.priority === 'high' ? 'difficile' : req.body.priority === 'medium' ? 'moyen' : 'facile');
+    const date = req.body.date || req.body.dueDate;
 
     if (!name || !difficulty || !date) {
-      throw new AppError(400, 'name, difficulty et date sont requis');
+      throw new AppError(400, 'name (ou title), difficulty (ou priority) et date (ou dueDate) sont requis');
     }
 
     if (!['facile', 'moyen', 'difficile'].includes(difficulty)) {
@@ -93,7 +97,34 @@ export class TaskController {
       throw new AppError(403, 'Accès refusé');
     }
 
-    await taskService.updateTask(id, req.body);
+    // Bloquer la modification si la tâche est complétée (sauf si on veut juste changer le status)
+    if (task.status === 'completed' && !req.body.status) {
+      throw new AppError(400, 'Impossible de modifier une tâche complétée');
+    }
+
+    // Convertir les nouveaux champs aux anciens s'ils sont présents
+    const updateData: any = { ...req.body };
+    if (req.body.title) {
+      updateData.name = req.body.title;
+      delete updateData.title;
+    }
+    if (req.body.priority) {
+      updateData.difficulty = req.body.priority === 'high' ? 'difficile' : req.body.priority === 'medium' ? 'moyen' : 'facile';
+      delete updateData.priority;
+    }
+    if (req.body.dueDate) {
+      updateData.date = req.body.dueDate;
+      delete updateData.dueDate;
+    }
+    if (req.body.status) {
+      // Supporter les 3 états: pending, in_progress, completed
+      // Envoyer SEULEMENT status, le trigger DB se charge de mettre à jour completed
+      updateData.status = req.body.status;
+      // Ne pas envoyer completed, le trigger BD gère la synchronisation
+      delete updateData.completed;
+    }
+
+    await taskService.updateTask(id, updateData);
 
     const updatedTask = await taskService.getTaskById(id);
 

@@ -4,15 +4,9 @@ import { authenticate } from '../middleware/authenticate';
 
 const router = Router();
 
-// Routes protégées
-router.get('/', authenticate, async (req, res, next) => {
-  try {
-    await taskController.getTasks(req, res);
-  } catch (error) {
-    next(error);
-  }
-});
+// Routes protégées - Ordre important: routes spécifiques avant génériques!
 
+// Routes GET spécifiques
 router.get('/today', authenticate, async (req, res, next) => {
   try {
     await taskController.getTodayTasks(req, res);
@@ -21,17 +15,10 @@ router.get('/today', authenticate, async (req, res, next) => {
   }
 });
 
-router.get('/:date', authenticate, async (req, res, next) => {
+// Routes PATCH/DELETE spécifiques
+router.patch('/:taskId/complete', authenticate, async (req, res, next) => {
   try {
-    await taskController.getTasksByDate(req, res);
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.post('/', authenticate, async (req, res, next) => {
-  try {
-    await taskController.createTask(req, res);
+    await taskController.completeTask(req, res);
   } catch (error) {
     next(error);
   }
@@ -45,17 +32,36 @@ router.patch('/:taskId', authenticate, async (req, res, next) => {
   }
 });
 
-router.patch('/:taskId/complete', authenticate, async (req, res, next) => {
+router.delete('/:taskId', authenticate, async (req, res, next) => {
   try {
-    await taskController.completeTask(req, res);
+    await taskController.deleteTask(req, res);
   } catch (error) {
     next(error);
   }
 });
 
-router.delete('/:taskId', authenticate, async (req, res, next) => {
+// Routes GET générales
+router.get('/', authenticate, async (req, res, next) => {
   try {
-    await taskController.deleteTask(req, res);
+    await taskController.getTasks(req, res);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Route GET par date (doit être après les routes spécifiques)
+router.get('/:date', authenticate, async (req, res, next) => {
+  try {
+    await taskController.getTasksByDate(req, res);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Routes POST
+router.post('/', authenticate, async (req, res, next) => {
+  try {
+    await taskController.createTask(req, res);
   } catch (error) {
     next(error);
   }

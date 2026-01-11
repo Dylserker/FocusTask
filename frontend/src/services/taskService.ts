@@ -75,7 +75,7 @@ export const taskService = {
    * Mise à jour d'une tâche
    */
   async updateTask(taskId: number, taskData: UpdateTaskData): Promise<Task> {
-    const response = await api.put<TaskResponse>(`/tasks/${taskId}`, taskData);
+    const response = await api.patch<TaskResponse>(`/tasks/${taskId}`, taskData);
     return response.data;
   },
 

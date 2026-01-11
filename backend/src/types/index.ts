@@ -26,6 +26,7 @@ export interface Task {
   date: Date;
   completed: boolean;
   completed_at: Date | null;
+  status?: 'pending' | 'in_progress' | 'completed';
   points_earned: number;
   created_at: Date;
   updated_at: Date;

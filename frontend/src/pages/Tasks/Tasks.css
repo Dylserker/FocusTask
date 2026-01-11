@@ -175,12 +175,26 @@
   box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
 }
 
-.task-card.completed {
-  opacity: 0.6;
+/* États de la tâche */
+.task-card.status-pending {
+  background: #f8f9fa;
+  border-color: #e1e8ed;
 }
 
-.task-card.completed .task-card-title {
+.task-card.status-in_progress {
+  background: #fff3cd;
+  border-color: #ffc107;
+}
+
+.task-card.status-completed {
+  background: #d4edda;
+  border-color: #28a745;
+  opacity: 0.8;
+}
+
+.task-card.status-completed .task-card-title {
   text-decoration: line-through;
+  color: #666;
 }
 
 .task-card-header {
@@ -190,10 +204,33 @@
   margin-bottom: 0.5rem;
 }
 
-.task-checkbox {
-  width: 18px;
-  height: 18px;
+.task-status-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
   cursor: pointer;
+  padding: 0;
+  margin: 0 0.25rem 0 0;
+  transition: transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.task-status-button:hover {
+  transform: scale(1.2);
+}
+
+.task-status-button.status-pending {
+  color: #6c757d;
+}
+
+.task-status-button.status-in_progress {
+  color: #ffc107;
+}
+
+.task-status-button.status-completed {
+  color: #28a745;
 }
 
 .task-card-title {
@@ -277,4 +314,40 @@
     min-width: 200px;
     font-size: 0.95rem;
   }
+}
+.alert {
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.alert-error {
+  background-color: #fee;
+  border: 1px solid #fcc;
+  color: #c33;
+}
+
+.alert-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: inherit;
+  padding: 0;
+  margin-left: 1rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
