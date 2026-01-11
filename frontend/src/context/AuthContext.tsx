@@ -20,12 +20,14 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [userName, setUserName] = useState('Utilisateur');
-  const [userLevel, setUserLevel] = useState(1);
-  const [experiencePercent, setExperiencePercent] = useState(0);
-  const [photoUrl, setPhotoUrl] = useState('');
+  // État initial basé sur le localStorage pour éviter le flash de déconnexion au F5
+  const storedUser = authService.getStoredUser();
+  const [isAuthenticated, setIsAuthenticated] = useState(authService.isAuthenticated());
+  const [user, setUser] = useState<AuthUser | null>(storedUser);
+  const [userName, setUserName] = useState(storedUser?.username || 'Utilisateur');
+  const [userLevel, setUserLevel] = useState(storedUser?.level || 1);
+  const [experiencePercent, setExperiencePercent] = useState(storedUser?.experiencePercent || 0);
+  const [photoUrl, setPhotoUrl] = useState(storedUser?.photoUrl || '');
   const [loading, setLoading] = useState(true);
 
   // Vérifie si l'utilisateur est connecté au chargement et récupère ses données
@@ -33,7 +35,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const initAuth = async () => {
       try {
         const isAuth = authService.isAuthenticated();
-        
+
         if (isAuth) {
           // Récupérer les données utilisateur depuis le backend
           const userData = await authService.getCurrentUser();
@@ -49,9 +51,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       } catch (error) {
         console.error('Erreur lors de la vérification de l\'authentification:', error);
-        // En cas d'erreur, nettoyer les données d'authentification
-        authService.logout();
-        setIsAuthenticated(false);
+        const status = (error as any)?.response?.status;
+
+        // Si le token est invalide, on nettoie; sinon on garde l'état local pour éviter un flash inutile
+        if (status === 401 || status === 403) {
+          authService.logout();
+          setIsAuthenticated(false);
+          setUser(null);
+          setUserName('Utilisateur');
+          setUserLevel(1);
+          setExperiencePercent(0);
+          setPhotoUrl('');
+        } else {
+          setIsAuthenticated(authService.isAuthenticated());
+        }
       } finally {
         setLoading(false);
       }

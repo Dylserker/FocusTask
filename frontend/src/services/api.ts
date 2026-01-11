@@ -33,15 +33,12 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
     if (error.response) {
-      // Erreurs du serveur
       const status = error.response.status;
-      
+
       switch (status) {
         case 401:
-          // Non authentifié - Rediriger vers la page de connexion
-          localStorage.removeItem('authToken');
-          localStorage.removeItem('isAuthenticated');
-          window.location.href = '/auth/login';
+          // On ne force plus la redirection : on laisse le contexte d'auth gérer
+          console.warn('401 non authentifié — token possiblement expiré');
           break;
         case 403:
           console.error('Accès interdit');
@@ -56,13 +53,11 @@ apiClient.interceptors.response.use(
           console.error('Erreur:', error.response.data);
       }
     } else if (error.request) {
-      // La requête a été faite mais pas de réponse
       console.error('Pas de réponse du serveur');
     } else {
-      // Erreur lors de la configuration de la requête
       console.error('Erreur:', error.message);
     }
-    
+
     return Promise.reject(error);
   }
 );
