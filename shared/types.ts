@@ -96,22 +96,26 @@ export interface UserAchievement {
 // Types de Récompenses
 // ============================
 
+export type RewardCategory = 'title' | 'avatar' | 'template' | 'theme' | 'badge' | 'feature';
+
 export interface Reward {
   id: number;
   title: string;
   description: string;
-  cost: number;
+  category: RewardCategory;
   icon?: string;
-  category?: string;
-  isAvailable: boolean;
+  points_required: number;
+  achievement_id?: number;
   createdAt?: string;
+  unlocked?: boolean;
+  achievement_title?: string;
 }
 
 export interface UserReward {
   id: number;
   userId: number;
   rewardId: number;
-  redeemedAt: string;
+  unlockedAt: string;
   reward?: Reward;
 }
 

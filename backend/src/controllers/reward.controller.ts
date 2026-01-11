@@ -39,6 +39,29 @@ export class RewardController {
     });
   }
 
+  async getRewardsByCategory(req: AuthRequest, res: Response) {
+    const { category } = req.params;
+    const rewards = await rewardService.getRewardsByCategory(category);
+
+    res.status(200).json({
+      status: 'success',
+      data: rewards,
+    });
+  }
+
+  async getRewardStats(req: AuthRequest, res: Response) {
+    if (!req.userId) {
+      throw new AppError(401, 'Non authentifié');
+    }
+
+    const stats = await rewardService.getRewardStats(req.userId);
+
+    res.status(200).json({
+      status: 'success',
+      data: stats,
+    });
+  }
+
   async unlockReward(req: AuthRequest, res: Response) {
     if (!req.userId) {
       throw new AppError(401, 'Non authentifié');
@@ -67,6 +90,19 @@ export class RewardController {
       status: 'success',
       message: 'Récompense débloquée avec succès',
       data: reward,
+    });
+  }
+
+  async unlockRewardsByPoints(req: AuthRequest, res: Response) {
+    if (!req.userId) {
+      throw new AppError(401, 'Non authentifié');
+    }
+
+    await rewardService.unlockRewardsByPoints(req.userId);
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Récompenses débloquées automatiquement selon vos points',
     });
   }
 }

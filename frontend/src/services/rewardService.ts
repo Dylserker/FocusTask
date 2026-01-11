@@ -1,33 +1,18 @@
 import { api } from './api';
-
-// Types pour les récompenses
-export interface Reward {
-  id: number;
-  title: string;
-  description: string;
-  cost: number; // Coût en points d'expérience
-  icon?: string;
-  category?: string;
-  isAvailable: boolean;
-  createdAt?: string;
-}
-
-export interface UserReward {
-  id: number;
-  userId: number;
-  rewardId: number;
-  redeemedAt: string;
-  reward?: Reward;
-}
+import type { Reward } from '../../../shared/types';
 
 export interface RewardsResponse {
-  success: boolean;
+  status: string;
   data: Reward[];
 }
 
-export interface UserRewardsResponse {
-  success: boolean;
-  data: UserReward[];
+export interface RewardStatsResponse {
+  status: string;
+  data: {
+    total: number;
+    unlocked: number;
+    byCategory: { category: string; total: number; unlocked: number }[];
+  };
 }
 
 // Service de gestion des récompenses
@@ -41,43 +26,55 @@ export const rewardService = {
   },
 
   /**
-   * Récupération des récompenses réclamées par l'utilisateur
+   * Récupération des récompenses disponibles selon les points de l'utilisateur
    */
-  async getUserRewards(): Promise<UserReward[]> {
-    const response = await api.get<UserRewardsResponse>('/rewards/user');
+  async getAvailableRewards(): Promise<Reward[]> {
+    const response = await api.get<RewardsResponse>('/rewards/available');
     return response.data;
   },
 
   /**
-   * Récupération d'une récompense par son ID
+   * Récupération des récompenses débloquées par l'utilisateur
    */
-  async getRewardById(rewardId: number): Promise<Reward> {
-    const response = await api.get<{ success: boolean; data: Reward }>(
-      `/rewards/${rewardId}`
-    );
+  async getUserRewards(): Promise<Reward[]> {
+    const response = await api.get<RewardsResponse>('/rewards/user');
     return response.data;
   },
 
   /**
-   * Réclamation d'une récompense
+   * Récupération des récompenses par catégorie
    */
-  async redeemReward(rewardId: number): Promise<UserReward> {
-    const response = await api.post<{ success: boolean; data: UserReward }>(
-      `/rewards/${rewardId}/redeem`
-    );
+  async getRewardsByCategory(category: string): Promise<Reward[]> {
+    const response = await api.get<RewardsResponse>(`/rewards/category/${category}`);
     return response.data;
   },
 
   /**
-   * Vérification si l'utilisateur peut réclamer une récompense
+   * Récupération des statistiques de récompenses
    */
-  async canRedeemReward(rewardId: number): Promise<{
-    canRedeem: boolean;
-    reason?: string;
-    currentExperience: number;
-    requiredExperience: number;
+  async getRewardStats(): Promise<{
+    total: number;
+    unlocked: number;
+    byCategory: { category: string; total: number; unlocked: number }[];
   }> {
-    const response = await api.get(`/rewards/${rewardId}/can-redeem`);
+    const response = await api.get<RewardStatsResponse>('/rewards/stats');
     return response.data;
+  },
+
+  /**
+   * Déblocage d'une récompense
+   */
+  async unlockReward(rewardId: number): Promise<Reward> {
+    const response = await api.post<{ status: string; data: Reward }>(
+      `/rewards/${rewardId}/unlock`
+    );
+    return response.data;
+  },
+
+  /**
+   * Déblocage automatique des récompenses par points
+   */
+  async unlockRewardsByPoints(): Promise<void> {
+    await api.post('/rewards/unlock-by-points');
   },
 };
