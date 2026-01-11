@@ -21,6 +21,7 @@ interface UserAchievement extends Achievement {
 const Achievements = () => {
   const [achievements, setAchievements] = useState<UserAchievement[]>([]);
   const [loading, setLoading] = useState(true);
+  const [unlockingMissing, setUnlockingMissing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { execute } = useApi();
 
@@ -71,6 +72,32 @@ const Achievements = () => {
     loadAchievements();
   }, [execute]);
 
+  const handleUnlockMissing = async () => {
+    setUnlockingMissing(true);
+    try {
+      const result = await achievementService.unlockMissingAchievements();
+
+      setAchievements((prev) =>
+        prev.map((achievement) => ({
+          ...achievement,
+          unlocked:
+            result.newlyUnlocked.some((ua) => ua.id === achievement.id) || achievement.unlocked,
+        }))
+      );
+
+      if (result.newlyUnlocked.length > 0) {
+        alert(`🎉 ${result.newlyUnlocked.length} nouveau(x) succès débloqué(s)!`);
+      } else {
+        alert('Tous vos succès sont déjà débloqués !');
+      }
+    } catch (err) {
+      console.error('Erreur lors du déblocage des succès:', err);
+      alert('Erreur lors du déblocage des succès');
+    } finally {
+      setUnlockingMissing(false);
+    }
+  };
+
   const unlockedCount = achievements.filter((a) => a.unlocked).length;
 
   if (loading) {
@@ -97,6 +124,16 @@ const Achievements = () => {
       <p className="achievements-progress">
         {unlockedCount} / {achievements.length} débloqués
       </p>
+
+      <div className="achievements-actions">
+        <button
+          className="btn btn-primary"
+          onClick={handleUnlockMissing}
+          disabled={unlockingMissing}
+        >
+          {unlockingMissing ? 'Déblocage en cours...' : '🔓 Débloquer succès manquants'}
+        </button>
+      </div>
 
       <div className="achievements-grid">
         {achievements.map((achievement) => (

@@ -65,6 +65,23 @@ export class AchievementController {
       data: achievements,
     });
   }
+
+  async unlockMissingAchievements(req: AuthRequest, res: Response) {
+    if (!req.userId) {
+      throw new AppError(401, 'Non authentifié');
+    }
+
+    const result = await achievementService.unlockMissingAchievements(req.userId);
+
+    res.status(200).json({
+      status: 'success',
+      message: `${result.newlyUnlocked.length} nouveau(x) succès débloqué(s)`,
+      data: {
+        newlyUnlocked: result.newlyUnlocked,
+        totalUnlocked: result.totalUnlocked,
+      },
+    });
+  }
 }
 
 export default new AchievementController();

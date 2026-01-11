@@ -97,6 +97,35 @@ export class AchievementService {
     );
     return rows as Achievement[];
   }
+
+  async unlockMissingAchievements(userId: number): Promise<{
+    newlyUnlocked: Achievement[];
+    totalUnlocked: number;
+  }> {
+    // Appeler la procédure stockée pour débloquer les succès manquants
+    await pool.query('CALL UnlockMissingAchievements(?)', [userId]);
+
+    // Récupérer les succès nouvellement débloqués (créés depuis moins de 10 secondes)
+    const [rows] = await pool.query(
+      `SELECT a.* FROM Achievements a
+       JOIN UserAchievements ua ON a.id = ua.achievement_id
+       WHERE ua.user_id = ?
+       AND ua.unlocked_at >= NOW() - INTERVAL 10 SECOND
+       ORDER BY ua.unlocked_at DESC`,
+      [userId]
+    );
+
+    // Récupérer le nombre total de succès débloqués
+    const [totalRows] = await pool.query(
+      'SELECT COUNT(*) as count FROM UserAchievements WHERE user_id = ?',
+      [userId]
+    );
+
+    return {
+      newlyUnlocked: rows as Achievement[],
+      totalUnlocked: ((totalRows as any[])[0])?.count || 0,
+    };
+  }
 }
 
 export default new AchievementService();

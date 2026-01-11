@@ -46,4 +46,12 @@ router.get('/user/new', authenticate, async (req, res, next) => {
   }
 });
 
+router.post('/unlock-missing', authenticate, async (req, res, next) => {
+  try {
+    await achievementController.unlockMissingAchievements(req, res);
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default router;

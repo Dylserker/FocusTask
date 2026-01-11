@@ -91,4 +91,23 @@ export const achievementService = {
     const response = await api.get<AchievementsResponse>('/achievements/user/new');
     return response.data;
   },
+  
+  /**
+   * Débloquer tous les succès manquants (rétroactivement)
+   */
+  async unlockMissingAchievements(): Promise<{
+    newlyUnlocked: Achievement[];
+    totalUnlocked: number;
+  }> {
+    const response = await api.post<{
+      status: string;
+      message: string;
+      data: {
+        newlyUnlocked: Achievement[];
+        totalUnlocked: number;
+      };
+    }>('/achievements/unlock-missing');
+    return response.data;
+  },
+  
 };
