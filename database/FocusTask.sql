@@ -37,13 +37,15 @@ create table if not exists Tasks (
     date date not null,
     completed boolean not null default false,
     completed_at timestamp null,
+    deleted_at timestamp null,
     points_earned int default 0,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp on update current_timestamp,
     foreign key (user_id) references Users(id) on delete cascade,
     index idx_user_date (user_id, date),
     index idx_completed (completed),
-    index idx_user_completed (user_id, completed)
+    index idx_user_completed (user_id, completed),
+    index idx_deleted (deleted_at)
 ) engine=InnoDB default charset=utf8mb4 collate=utf8mb4_unicode_ci;
 
 -- Table: Achievements
@@ -283,4 +285,95 @@ begin
     
     update Users set current_streak = v_streak where id = p_user_id;
 end;//
+delimiter ;
+
+-- ============================================
+-- Système de niveaux basé sur l'XP
+-- ============================================
+-- Formule: Niveau N nécessite N*100 XP pour passer au niveau suivant
+-- XP total pour atteindre niveau N = 50 * N * (N - 1)
+-- Exemples:
+--   Niveau 1: 0-99 XP
+--   Niveau 2: 100-299 XP (besoin de 100 XP)
+--   Niveau 3: 300-599 XP (besoin de 200 XP)
+--   Niveau 4: 600-999 XP (besoin de 300 XP)
+-- ============================================
+
+delimiter $$
+
+-- Fonction pour calculer le niveau basé sur l'XP total
+drop function if exists calculate_level$$
+create function calculate_level(xp int) returns int
+deterministic
+begin
+    declare level_value int;
+    -- Formule inversée: niveau = (1 + sqrt(1 + 8*xp/100)) / 2
+    set level_value = floor((1 + sqrt(1 + 8 * xp / 100)) / 2);
+    -- Le niveau minimum est 1
+    if level_value < 1 then
+        set level_value = 1;
+    end if;
+    return level_value;
+end$$
+
+-- Fonction pour calculer l'XP total nécessaire pour atteindre un niveau
+drop function if exists xp_for_level$$
+create function xp_for_level(level_num int) returns int
+deterministic
+begin
+    -- XP total pour atteindre niveau N = 50 * N * (N - 1)
+    return 50 * level_num * (level_num - 1);
+end$$
+
+-- Fonction pour calculer le pourcentage de progression vers le niveau suivant
+drop function if exists calculate_level_percent$$
+create function calculate_level_percent(xp int) returns int
+deterministic
+begin
+    declare current_level int;
+    declare xp_for_current int;
+    declare xp_for_next int;
+    declare xp_in_level int;
+    declare xp_needed int;
+    declare percent_value int;
+    
+    set current_level = calculate_level(xp);
+    set xp_for_current = xp_for_level(current_level);
+    set xp_for_next = xp_for_level(current_level + 1);
+    set xp_in_level = xp - xp_for_current;
+    set xp_needed = xp_for_next - xp_for_current;
+    
+    if xp_needed > 0 then
+        set percent_value = floor(100 * xp_in_level / xp_needed);
+    else
+        set percent_value = 0;
+    end if;
+    
+    return percent_value;
+end$$
+
+-- Trigger pour mettre à jour automatiquement le niveau lors d'un UPDATE
+drop trigger if exists update_user_level$$
+create trigger update_user_level
+before update on Users
+for each row
+begin
+    -- Mettre à jour le niveau et le pourcentage basé sur experience_points
+    if new.experience_points != old.experience_points then
+        set new.level = calculate_level(new.experience_points);
+        set new.experience_percent = calculate_level_percent(new.experience_points);
+    end if;
+end$$
+
+-- Trigger pour initialiser le niveau lors d'un INSERT
+drop trigger if exists insert_user_level$$
+create trigger insert_user_level
+before insert on Users
+for each row
+begin
+    -- Initialiser le niveau et le pourcentage lors de la création
+    set new.level = calculate_level(new.experience_points);
+    set new.experience_percent = calculate_level_percent(new.experience_points);
+end$$
+
 delimiter ;

@@ -22,7 +22,7 @@ export class TaskService {
 
   async getTaskById(taskId: number): Promise<Task | null> {
     const [rows] = await pool.query(
-      `SELECT *, DATE_FORMAT(date, '%Y-%m-%d') as date FROM Tasks WHERE id = ?`,
+      `SELECT *, DATE_FORMAT(date, '%Y-%m-%d') as date FROM Tasks WHERE id = ? AND deleted_at IS NULL`,
       [taskId]
     );
     const task = (rows as Task[])[0] || null;
@@ -35,7 +35,7 @@ export class TaskService {
     offset: number = 0
   ): Promise<Task[]> {
     const [rows] = await pool.query(
-      `SELECT *, DATE_FORMAT(date, '%Y-%m-%d') as date FROM Tasks WHERE user_id = ? ORDER BY date DESC LIMIT ? OFFSET ?`,
+      `SELECT *, DATE_FORMAT(date, '%Y-%m-%d') as date FROM Tasks WHERE user_id = ? AND deleted_at IS NULL ORDER BY date DESC LIMIT ? OFFSET ?`,
       [userId, limit, offset]
     );
     return (rows as Task[]).map(task => this.formatTask(task));
@@ -43,7 +43,7 @@ export class TaskService {
 
   async getTasksByUserAndDate(userId: number, date: string): Promise<Task[]> {
     const [rows] = await pool.query(
-      `SELECT *, DATE_FORMAT(date, '%Y-%m-%d') as date FROM Tasks WHERE user_id = ? AND date = ? ORDER BY created_at`,
+      `SELECT *, DATE_FORMAT(date, '%Y-%m-%d') as date FROM Tasks WHERE user_id = ? AND date = ? AND deleted_at IS NULL ORDER BY created_at`,
       [userId, date]
     );
     return (rows as Task[]).map(task => this.formatTask(task));
@@ -114,12 +114,13 @@ export class TaskService {
   }
 
   async deleteTask(taskId: number): Promise<void> {
-    await pool.query('DELETE FROM Tasks WHERE id = ?', [taskId]);
+    const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    await pool.query('UPDATE Tasks SET deleted_at = ? WHERE id = ?', [now, taskId]);
   }
 
   async getTodayTasks(userId: number): Promise<Task[]> {
     const [rows] = await pool.query(
-      `SELECT *, DATE_FORMAT(date, '%Y-%m-%d') as date FROM Tasks WHERE user_id = ? AND DATE(date) = CURDATE()`,
+      `SELECT *, DATE_FORMAT(date, '%Y-%m-%d') as date FROM Tasks WHERE user_id = ? AND DATE(date) = CURDATE() AND deleted_at IS NULL`,
       [userId]
     );
     return (rows as Task[]).map(task => this.formatTask(task));
@@ -127,7 +128,7 @@ export class TaskService {
 
   async getCompletedTasksCount(userId: number): Promise<number> {
     const [rows] = await pool.query(
-      'SELECT COUNT(*) as count FROM Tasks WHERE user_id = ? AND completed = true',
+      'SELECT COUNT(*) as count FROM Tasks WHERE user_id = ? AND completed = true AND deleted_at IS NULL',
       [userId]
     );
     return ((rows as any[])[0])?.count || 0;

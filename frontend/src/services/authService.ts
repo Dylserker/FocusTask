@@ -21,7 +21,12 @@ export interface AuthResponse {
     email: string;
     firstName?: string;
     lastName?: string;
+    photoUrl?: string;
     level: number;
+    experiencePoints: number;
+    experiencePercent: number;
+    tasksCompleted?: number;
+    currentStreak?: number;
     totalPoints?: number;
   };
   token: string;
@@ -33,8 +38,13 @@ export interface AuthUser {
   email: string;
   firstName?: string;
   lastName?: string;
+  photoUrl?: string;
   level: number;
-  experience: number;
+  experiencePoints: number;
+  experiencePercent: number;
+  tasksCompleted?: number;
+  currentStreak?: number;
+  totalPoints?: number;
   createdAt?: string;
 }
 
@@ -89,7 +99,8 @@ export const authService = {
    * Récupération de l'utilisateur courant
    */
   async getCurrentUser(): Promise<AuthUser> {
-    return await api.get<AuthUser>('/auth/me');
+    const response = await api.get<{ status: string; data: AuthUser }>('/auth/me');
+    return response.data;
   },
 
   /**

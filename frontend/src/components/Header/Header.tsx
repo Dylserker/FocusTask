@@ -7,7 +7,17 @@ import './Header.css';
 const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, userName, userLevel, experiencePercent, logout } = useAuth();
+  const { isAuthenticated, userName, userLevel, experiencePercent, photoUrl, logout } = useAuth();
+  
+  console.log('🔍 Header Debug:', {
+    userName,
+    userLevel,
+    experiencePercent,
+    photoUrl,
+    photoUrlType: typeof photoUrl,
+    photoUrlLength: photoUrl?.length
+  });
+  
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
 
   if (isAuthPage) {
@@ -61,7 +71,11 @@ const Header = () => {
                 </defs>
               </svg>
               <div className="profile-avatar">
-                {userName.charAt(0).toUpperCase()}
+                {photoUrl ? (
+                  <img src={photoUrl} alt={`Avatar de ${userName}`} />
+                ) : (
+                  userName.charAt(0).toUpperCase()
+                )}
               </div>
             </Link>
             <div className="profile-info">

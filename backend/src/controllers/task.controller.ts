@@ -192,6 +192,11 @@ export class TaskController {
       throw new AppError(403, 'Accès refusé');
     }
 
+    // Bloquer la suppression des tâches complétées
+    if (task.status === 'completed') {
+      throw new AppError(400, 'Impossible de supprimer une tâche complétée');
+    }
+
     await taskService.deleteTask(id);
 
     res.status(200).json({

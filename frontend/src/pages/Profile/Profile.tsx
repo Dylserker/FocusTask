@@ -19,6 +19,13 @@ type UserProfile = {
 
 const Profile = () => {
   const { user: authUser, userLevel, experiencePercent, refreshUserData } = useAuth();
+  
+  console.log('🔍 Profile Debug - Context:', {
+    userLevel,
+    experiencePercent,
+    authUser
+  });
+  
   const [user, setUser] = useState<UserProfile>({
     username: 'Utilisateur',
     email: 'user@example.com',
@@ -31,6 +38,13 @@ const Profile = () => {
     level: 1,
     experiencePercent: 0,
   });
+  
+  console.log('🔍 Profile Debug - State:', {
+    userLevel: user.level,
+    experiencePercent: user.experiencePercent,
+    photoUrl: user.photoUrl
+  });
+  
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -75,6 +89,15 @@ const Profile = () => {
 
     loadProfileData();
   }, [authUser, userLevel, experiencePercent]);
+
+  // Synchroniser le niveau et l'XP avec le contexte en temps réel
+  useEffect(() => {
+    setUser(prev => ({
+      ...prev,
+      level: userLevel,
+      experiencePercent: experiencePercent,
+    }));
+  }, [userLevel, experiencePercent]);
 
   const handleSaveProfile = async (
     payload: Pick<UserProfile, 'username' | 'email' | 'firstName' | 'lastName' | 'photoUrl'>,

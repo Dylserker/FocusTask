@@ -8,6 +8,7 @@ interface AuthContextType {
   userName: string;
   userLevel: number;
   experiencePercent: number;
+  photoUrl: string;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (username: string, email: string, password: string) => Promise<void>;
@@ -24,6 +25,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [userName, setUserName] = useState('Utilisateur');
   const [userLevel, setUserLevel] = useState(1);
   const [experiencePercent, setExperiencePercent] = useState(0);
+  const [photoUrl, setPhotoUrl] = useState('');
   const [loading, setLoading] = useState(true);
 
   // Vérifie si l'utilisateur est connecté au chargement et récupère ses données
@@ -35,11 +37,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (isAuth) {
           // Récupérer les données utilisateur depuis le backend
           const userData = await authService.getCurrentUser();
+          console.log('🔍 AuthContext initAuth - userData reçue:', userData);
+          console.log('🔍 AuthContext initAuth - experiencePercent:', userData.experiencePercent);
+          console.log('🔍 AuthContext initAuth - photoUrl:', userData.photoUrl);
           setUser(userData);
           setIsAuthenticated(true);
           setUserName(userData.username);
           setUserLevel(userData.level);
-          setExperiencePercent(userService.calculateExperiencePercent(userData.experience, userData.level));
+          setExperiencePercent(userData.experiencePercent || 0);
+          setPhotoUrl(userData.photoUrl || '');
         }
       } catch (error) {
         console.error('Erreur lors de la vérification de l\'authentification:', error);
@@ -64,14 +70,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           username: response.data.username,
           email: response.data.email,
           level: response.data.level || 1,
-          experience: response.data.totalPoints || 0,
+          experience: response.data.experiencePoints || response.data.totalPoints || 0,
+          experiencePercent: response.data.experiencePercent || 0,
+          photoUrl: response.data.photoUrl || '',
         };
         
         setUser(userData);
         setIsAuthenticated(true);
         setUserName(userData.username);
         setUserLevel(userData.level);
-        setExperiencePercent(userService.calculateExperiencePercent(userData.experience, userData.level));
+        setExperiencePercent(userData.experiencePercent);
+        setPhotoUrl(userData.photoUrl);
       } else {
         throw new Error(response.message || 'Échec de la connexion');
       }
@@ -91,14 +100,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           username: response.data.username,
           email: response.data.email,
           level: response.data.level || 1,
-          experience: response.data.totalPoints || 0,
+          experience: response.data.experiencePoints || response.data.totalPoints || 0,
+          experiencePercent: response.data.experiencePercent || 0,
+          photoUrl: response.data.photoUrl || '',
         };
         
         setUser(userData);
         setIsAuthenticated(true);
         setUserName(userData.username);
         setUserLevel(userData.level);
-        setExperiencePercent(userService.calculateExperiencePercent(userData.experience, userData.level));
+        setExperiencePercent(userData.experiencePercent);
+        setPhotoUrl(userData.photoUrl);
       } else {
         throw new Error(response.message || 'Échec de l\'inscription');
       }
@@ -115,15 +127,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUserName('Utilisateur');
     setUserLevel(1);
     setExperiencePercent(0);
+    setPhotoUrl('');
   };
 
   const refreshUserData = async () => {
     try {
       const userData = await authService.getCurrentUser();
+      console.log('🔍 AuthContext refreshUserData - userData reçue:', userData);
+      console.log('🔍 AuthContext refreshUserData - experiencePercent:', userData.experiencePercent);
+      console.log('🔍 AuthContext refreshUserData - photoUrl:', userData.photoUrl);
       setUser(userData);
       setUserName(userData.username);
       setUserLevel(userData.level);
-      setExperiencePercent(userService.calculateExperiencePercent(userData.experience, userData.level));
+      setExperiencePercent(userData.experiencePercent || 0);
+      setPhotoUrl(userData.photoUrl || '');
     } catch (error) {
       console.error('Erreur lors du rafraîchissement des données utilisateur:', error);
     }
@@ -147,6 +164,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         userName,
         userLevel,
         experiencePercent,
+        photoUrl,
         loading,
         login,
         register,

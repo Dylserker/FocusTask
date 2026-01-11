@@ -317,6 +317,7 @@ const Tasks = () => {
                             onClick={() => handleEditTask(task)} 
                             className="btn-edit-small"
                             aria-label="Modifier"
+                            title={task.status === 'completed' ? 'Voir les détails' : 'Modifier'}
                           >
                             ✏️
                           </button>
@@ -324,6 +325,8 @@ const Tasks = () => {
                             onClick={() => deleteTask(task.id)} 
                             className="btn-delete-small"
                             aria-label="Supprimer"
+                            disabled={task.status === 'completed'}
+                            title={task.status === 'completed' ? 'Impossible de supprimer une tâche complétée' : 'Supprimer'}
                           >
                             🗑️
                           </button>
