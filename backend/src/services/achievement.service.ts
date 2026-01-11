@@ -15,15 +15,14 @@ export class AchievementService {
     return rows as Achievement[];
   }
 
-  async getUserAchievements(userId: number): Promise<Achievement[]> {
+  async getUserAchievements(userId: number): Promise<{ achievement_id: number }[]> {
     const [rows] = await pool.query(
-      `SELECT a.* FROM Achievements a 
-       JOIN UserAchievements ua ON a.id = ua.achievement_id 
+      `SELECT ua.achievement_id FROM UserAchievements ua
        WHERE ua.user_id = ? 
        ORDER BY ua.unlocked_at DESC`,
       [userId]
     );
-    return rows as Achievement[];
+    return rows as { achievement_id: number }[];
   }
 
   async unlockAchievement(userId: number, achievementId: number): Promise<void> {
@@ -69,6 +68,34 @@ export class AchievementService {
       total: ((total as any[])[0])?.count || 0,
       unlocked: ((unlocked as any[])[0])?.count || 0,
     };
+  }
+
+  async checkAndUnlockAchievements(userId: number): Promise<Achievement[]> {
+    // Appeler la procédure stockée pour vérifier et débloquer les succès
+    await pool.query('CALL CheckAchievements(?)', [userId]);
+
+    // Récupérer les succès nouvellement débloqués
+    const [rows] = await pool.query(
+      `SELECT a.* FROM Achievements a
+       JOIN UserAchievements ua ON a.id = ua.achievement_id
+       WHERE ua.user_id = ?
+       ORDER BY ua.unlocked_at DESC`,
+      [userId]
+    );
+    return rows as Achievement[];
+  }
+
+  async getNewlyUnlockedAchievements(userId: number): Promise<Achievement[]> {
+    // Récupérer les succès débloqués dans les dernières 24 heures
+    const [rows] = await pool.query(
+      `SELECT a.* FROM Achievements a
+       JOIN UserAchievements ua ON a.id = ua.achievement_id
+       WHERE ua.user_id = ?
+       AND ua.unlocked_at >= NOW() - INTERVAL 1 DAY
+       ORDER BY ua.unlocked_at DESC`,
+      [userId]
+    );
+    return rows as Achievement[];
   }
 }
 

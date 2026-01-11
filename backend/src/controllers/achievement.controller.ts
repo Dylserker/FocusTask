@@ -18,15 +18,11 @@ export class AchievementController {
       throw new AppError(401, 'Non authentifié');
     }
 
-    const achievements = await achievementService.getUserAchievements(req.userId);
-    const progress = await achievementService.getAchievementProgress(req.userId);
+    const userAchievementIds = await achievementService.getUserAchievements(req.userId);
 
     res.status(200).json({
       status: 'success',
-      data: {
-        achievements,
-        progress,
-      },
+      data: userAchievementIds,
     });
   }
 
@@ -40,6 +36,33 @@ export class AchievementController {
     res.status(200).json({
       status: 'success',
       data: progress,
+    });
+  }
+
+  async checkAchievements(req: AuthRequest, res: Response) {
+    if (!req.userId) {
+      throw new AppError(401, 'Non authentifié');
+    }
+
+    const achievements = await achievementService.checkAndUnlockAchievements(req.userId);
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Vérification des succès effectuée',
+      data: achievements,
+    });
+  }
+
+  async getNewlyUnlockedAchievements(req: AuthRequest, res: Response) {
+    if (!req.userId) {
+      throw new AppError(401, 'Non authentifié');
+    }
+
+    const achievements = await achievementService.getNewlyUnlockedAchievements(req.userId);
+
+    res.status(200).json({
+      status: 'success',
+      data: achievements,
     });
   }
 }

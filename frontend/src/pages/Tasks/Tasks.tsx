@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import TaskModal from '../../components/Modal/ModalTask/TaskModal';
 import { taskService } from '../../services/taskService';
+import { achievementService } from '../../services/achievementService';
 import './Tasks.css';
 
 // Fonction utilitaire pour formater une date au format YYYY-MM-DD en heure locale
@@ -167,6 +168,16 @@ const Tasks = () => {
       setTasks(tasks.map(t => 
         t.id === id ? { ...t, status: newStatus } : t
       ));
+
+      // Si la tâche est marquée comme complétée, vérifier les succès
+      if (newStatus === 'completed') {
+        try {
+          await achievementService.checkAchievements();
+        } catch (err) {
+          console.error('Erreur lors de la vérification des succès:', err);
+          // On ne lance pas une erreur, juste on log
+        }
+      }
     } catch (err) {
       setError('Erreur lors de la mise à jour de la tâche');
       console.error(err);

@@ -69,3 +69,18 @@
   font-size: 0.8rem;
   font-weight: 500;
 }
+.points-badge {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  background: #f0ad4e;
+  color: white;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 1rem;
+}

@@ -5,30 +5,36 @@ export interface Achievement {
   id: number;
   title: string;
   description: string;
-  category: string;
-  icon?: string;
-  experienceReward: number;
-  condition: string;
-  conditionValue: number;
-  createdAt?: string;
+  icon: string;
+  condition_type: string;
+  condition_value: number;
+  points_reward: number;
+  created_at?: string;
 }
 
-export interface UserAchievement {
+export interface UserAchievementData {
   id: number;
-  userId: number;
-  achievementId: number;
-  unlockedAt: string;
-  achievement?: Achievement;
+  user_id: number;
+  achievement_id: number;
+  unlocked_at: string;
 }
 
 export interface AchievementsResponse {
-  success: boolean;
+  status: string;
   data: Achievement[];
 }
 
 export interface UserAchievementsResponse {
-  success: boolean;
-  data: UserAchievement[];
+  status: string;
+  data: UserAchievementData[];
+}
+
+export interface AchievementProgressResponse {
+  status: string;
+  data: {
+    total: number;
+    unlocked: number;
+  };
 }
 
 // Service de gestion des achievements
@@ -44,8 +50,19 @@ export const achievementService = {
   /**
    * Récupération des achievements débloqués par l'utilisateur
    */
-  async getUserAchievements(): Promise<UserAchievement[]> {
+  async getUserAchievements(): Promise<UserAchievementData[]> {
     const response = await api.get<UserAchievementsResponse>('/achievements/user');
+    return response.data;
+  },
+
+  /**
+   * Récupération de la progression de l'utilisateur
+   */
+  async getAchievementProgress(): Promise<{
+    total: number;
+    unlocked: number;
+  }> {
+    const response = await api.get<AchievementProgressResponse>('/achievements/user/progress');
     return response.data;
   },
 
@@ -53,29 +70,25 @@ export const achievementService = {
    * Récupération d'un achievement par son ID
    */
   async getAchievementById(achievementId: number): Promise<Achievement> {
-    const response = await api.get<{ success: boolean; data: Achievement }>(
+    const response = await api.get<{ status: string; data: Achievement }>(
       `/achievements/${achievementId}`
     );
     return response.data;
   },
 
   /**
-   * Vérification des achievements et déblocage automatique
+   * Vérifier et débloquer les achievements automatiquement
    */
-  async checkAchievements(): Promise<UserAchievement[]> {
-    const response = await api.post<UserAchievementsResponse>('/achievements/check');
+  async checkAchievements(): Promise<Achievement[]> {
+    const response = await api.post<AchievementsResponse>('/achievements/check');
     return response.data;
   },
 
   /**
-   * Récupération de la progression vers un achievement
+   * Récupérer les achievements débloqués récemment (24h)
    */
-  async getAchievementProgress(achievementId: number): Promise<{
-    current: number;
-    target: number;
-    percentage: number;
-  }> {
-    const response = await api.get(`/achievements/${achievementId}/progress`);
+  async getNewlyUnlockedAchievements(): Promise<Achievement[]> {
+    const response = await api.get<AchievementsResponse>('/achievements/user/new');
     return response.data;
   },
 };
