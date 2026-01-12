@@ -1,0 +1,16 @@
+{
+  "buildCommand": "cd backend && npm run build",
+  "outputDirectory": "backend/dist",
+  "cleanUrls": true,
+  "functions": {
+    "backend/src/index.ts": {
+      "runtime": "nodejs18.x"
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/backend/src/index.ts"
+    }
+  ]
+}
