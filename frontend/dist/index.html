@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    
+    <!-- Favicon et icônes -->
+    <link rel="icon" type="image/png" href="/FocusTask/icons/icon-192x192.png" />
+    <link rel="apple-touch-icon" href="/FocusTask/icons/icon-192x192.png" />
+    
+    <!-- Meta tags de base -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+    <meta name="description" content="FocusTask - Gestionnaire de tâches avec système de récompenses et achievements pour améliorer votre productivité" />
+    <meta name="keywords" content="tâches, productivité, achievements, récompenses, gestion" />
+    <meta name="author" content="FocusTask" />
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#4f46e5" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="FocusTask" />
+    
+    <!-- Manifest -->
+    <link rel="manifest" href="/FocusTask/manifest.json" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="FocusTask - Gestionnaire de Tâches" />
+    <meta property="og:description" content="Application de gestion de tâches avec système de récompenses et achievements" />
+    <meta property="og:image" content="/FocusTask/icons/icon-512x512.png" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="FocusTask - Gestionnaire de Tâches" />
+    <meta name="twitter:description" content="Application de gestion de tâches avec système de récompenses et achievements" />
+    <meta name="twitter:image" content="/FocusTask/icons/icon-512x512.png" />
+    
+    <title>FocusTask - Gestionnaire de Tâches</title>
+    <script type="module" crossorigin src="/FocusTask/assets/index-ArHixqb_.js"></script>
+    <link rel="stylesheet" crossorigin href="/FocusTask/assets/index-CwFy3a8l.css">
+  <link rel="manifest" href="/FocusTask/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/FocusTask/registerSW.js"></script></head>
+  <body>
+    <div id="root"></div>
+    
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('SW registered:', registration);
+            })
+            .catch((error) => {
+              console.log('SW registration failed:', error);
+            });
+        });
+      }
+    </script>
+  </body>
+</html>
