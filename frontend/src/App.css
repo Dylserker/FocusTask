@@ -22,10 +22,19 @@ body {
   flex: 1;
   margin-left: 250px;
   min-height: 100vh;
+  transition: margin-left 0.3s ease;
 }
 
 .main-content.auth {
   margin-left: 0;
+}
+
+/* Responsive Mobile */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    padding-top: 60px; /* Espace pour le header mobile */
+  }
 }
 
 /* Boutons globaux */

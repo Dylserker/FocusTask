@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 
 import Header from './components/Header/Header';
+import InstallPWA from './components/InstallPWA/InstallPWA';
 import AppRouter from './router/AppRouter';
 import { AuthProvider } from './context/AuthContext';
 
@@ -16,6 +17,7 @@ function Content() {
       <main className={isAuthPage ? 'main-content auth' : 'main-content'}>
         <AppRouter />
       </main>
+      {!isAuthPage && <InstallPWA />}
     </div>
   );
 }
