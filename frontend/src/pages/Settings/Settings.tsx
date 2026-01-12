@@ -3,7 +3,7 @@ import { settingsService, type UserSettings } from '../../services/settingsServi
 import './Settings.css';
 
 const Settings = () => {
-  const [notifications, setNotifications] = useState(true);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [emailNotifications, setEmailNotifications] = useState(false);
   const [soundEffects, setSoundEffects] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
@@ -29,7 +29,7 @@ const Settings = () => {
       const settings: UserSettings = await settingsService.getSettings();
       
       if (settings) {
-        setNotifications(settings.notifications ?? true);
+        setNotificationsEnabled(settings.notificationsEnabled ?? true);
         setEmailNotifications(settings.emailNotifications ?? false);
         setSoundEffects(settings.soundEffects ?? true);
         setDarkMode(settings.theme === 'dark');
@@ -53,7 +53,7 @@ const Settings = () => {
       setSuccessMessage(null);
 
       await settingsService.updateSettings({
-        notifications: notifications,
+        notificationsEnabled: notificationsEnabled,
         emailNotifications: emailNotifications,
         soundEffects: soundEffects,
         theme: darkMode ? 'dark' : 'light',
@@ -125,8 +125,8 @@ const Settings = () => {
             type="checkbox"
             id="notifications"
             className="toggle"
-            checked={notifications}
-            onChange={(e) => setNotifications(e.target.checked)}
+            checked={notificationsEnabled}
+            onChange={(e) => setNotificationsEnabled(e.target.checked)}
           />
         </div>
 

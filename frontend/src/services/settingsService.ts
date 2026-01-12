@@ -1,12 +1,30 @@
 import { api } from './api';
 
-// Types pour les paramètres
+type Theme = 'light' | 'dark' | 'auto';
+
+// Représentation renvoyée par l'API (snake_case)
+interface BackendSettings {
+  id: number;
+  user_id: number;
+  notifications_enabled: boolean;
+  email_notifications: boolean;
+  sound_effects: boolean;
+  daily_reminder_time: string | null;
+  theme: Theme;
+  language: string;
+  timezone: string | null;
+  daily_goal: number | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+// Représentation utilisée dans le front (camelCase)
 export interface UserSettings {
   id: number;
   userId: number;
-  theme: 'light' | 'dark' | 'auto';
+  theme: Theme;
   language: string;
-  notifications: boolean;
+  notificationsEnabled: boolean;
   emailNotifications: boolean;
   soundEffects: boolean;
   dailyGoal?: number;
@@ -17,41 +35,70 @@ export interface UserSettings {
 }
 
 export interface UpdateSettingsData {
-  theme?: 'light' | 'dark' | 'auto';
+  theme?: Theme;
   language?: string;
-  notifications?: boolean;
+  notificationsEnabled?: boolean;
   emailNotifications?: boolean;
   soundEffects?: boolean;
   dailyGoal?: number;
   dailyReminderTime?: string;
   timezone?: string;
-  notificationsEnabled?: boolean;
 }
+
+interface ApiEnvelope<T> {
+  status?: string;
+  data?: T;
+  message?: string;
+  error?: string;
+}
+
+const mapFromBackend = (settings: BackendSettings): UserSettings => ({
+  id: settings.id,
+  userId: settings.user_id,
+  theme: settings.theme ?? 'light',
+  language: settings.language ?? 'fr',
+  notificationsEnabled: settings.notifications_enabled ?? true,
+  emailNotifications: settings.email_notifications ?? false,
+  soundEffects: settings.sound_effects ?? true,
+  dailyGoal: settings.daily_goal ?? undefined,
+  dailyReminderTime: settings.daily_reminder_time ?? undefined,
+  timezone: settings.timezone ?? undefined,
+  createdAt: settings.created_at,
+  updatedAt: settings.updated_at,
+});
+
+const ensureSuccess = <T>(response: ApiEnvelope<T>, fallbackMessage: string): T => {
+  if (response?.status === 'success' && response.data) {
+    return response.data;
+  }
+
+  const message = response?.message || response?.error || fallbackMessage;
+  throw new Error(message);
+};
 
 // Service de gestion des paramètres
 export const settingsService = {
-  /**
-   * Récupération des paramètres de l'utilisateur
-   */
   async getSettings(): Promise<UserSettings> {
-    const response = await api.get<{ success: boolean; data: UserSettings }>('/settings');
-    return response.data;
+    const response = await api.get<ApiEnvelope<BackendSettings>>('/settings');
+    const payload = ensureSuccess(response, 'Impossible de récupérer les paramètres');
+    return mapFromBackend(payload);
   },
 
-  /**
-   * Mise à jour des paramètres de l'utilisateur
-   */
   async updateSettings(data: UpdateSettingsData): Promise<UserSettings> {
-    const response = await api.patch<{ success: boolean; data: UserSettings }>('/settings', data);
-    return response.data;
-  },
+    const payload = {
+      notificationsEnabled: data.notificationsEnabled,
+      emailNotifications: data.emailNotifications,
+      soundEffects: data.soundEffects,
+      dailyReminderTime: data.dailyReminderTime,
+      theme: data.theme,
+      language: data.language,
+      timezone: data.timezone,
+      dailyGoal: data.dailyGoal,
+    };
 
-  /**
-   * Réinitialisation des paramètres par défaut
-   */
-  async resetSettings(): Promise<UserSettings> {
-    const response = await api.post<{ success: boolean; data: UserSettings }>('/settings/reset');
-    return response.data;
+    const response = await api.patch<ApiEnvelope<BackendSettings>>('/settings', payload);
+    const updated = ensureSuccess(response, 'Impossible de mettre à jour les paramètres');
+    return mapFromBackend(updated);
   },
 };
 
