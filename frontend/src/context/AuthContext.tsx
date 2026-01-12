@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { authService, type AuthUser } from '../services/authService';
-import { userService } from '../services/userService';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -84,6 +83,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           email: response.data.email,
           level: response.data.level || 1,
           experience: response.data.experiencePoints || response.data.totalPoints || 0,
+          experiencePoints: response.data.experiencePoints || response.data.totalPoints || 0,
           experiencePercent: response.data.experiencePercent || 0,
           photoUrl: response.data.photoUrl || '',
         };
@@ -114,6 +114,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           email: response.data.email,
           level: response.data.level || 1,
           experience: response.data.experiencePoints || response.data.totalPoints || 0,
+          experiencePoints: response.data.experiencePoints || response.data.totalPoints || 0,
           experiencePercent: response.data.experiencePercent || 0,
           photoUrl: response.data.photoUrl || '',
         };

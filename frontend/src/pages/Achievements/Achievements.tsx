@@ -54,8 +54,8 @@ const Achievements = () => {
 
         // Créer une liste enrichie avec statut d'unlock
         if (allAchievements) {
-          const unlockedIds = new Set(userAchievements?.map((ua) => ua.achievement_id || ua.id) || []);
-          const enrichedAchievements = allAchievements.map((achievement) => ({
+          const unlockedIds = new Set(userAchievements?.map((ua: any) => ua.achievement_id || ua.id) || []);
+          const enrichedAchievements = allAchievements.map((achievement: any) => ({
             ...achievement,
             unlocked: unlockedIds.has(achievement.id),
           }));
