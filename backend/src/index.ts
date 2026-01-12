@@ -28,11 +28,20 @@ const allowedOrigins = process.env.FRONTEND_URL
   ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
   : ['http://localhost:5173'];
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 console.log('🔍 CORS Allowed Origins:', allowedOrigins);
 console.log('🔍 NODE_ENV:', process.env.NODE_ENV);
+console.log('🔍 FRONTEND_URL env var:', process.env.FRONTEND_URL);
 
 app.use(cors({
   origin: (origin, callback) => {
+    // En production sans FRONTEND_URL, accepter tout temporairement
+    if (isProduction && !process.env.FRONTEND_URL) {
+      console.log('⚠️ CORS: No FRONTEND_URL defined, accepting all origins');
+      return callback(null, true);
+    }
+    
     // Permet les requêtes sans origin (comme les apps mobiles ou Postman)
     if (!origin) {
       console.log('✅ CORS: No origin provided');
@@ -49,7 +58,7 @@ app.use(cors({
       callback(new Error('Not allowed by CORS'));
     }
   },
-  credentials: true, // Permet l'envoi de cookies et d'en-têtes d'authentification
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
