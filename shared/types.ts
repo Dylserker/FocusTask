@@ -1,9 +1,6 @@
 // Types partagés entre Frontend et Backend
 
-// ============================
 // Types d'Authentification
-// ============================
-
 export interface LoginCredentials {
   email: string;
   password: string;
@@ -34,10 +31,7 @@ export interface AuthResponse {
   message?: string;
 }
 
-// ============================
 // Types de Tâches
-// ============================
-
 export type TaskStatus = 'pending' | 'in_progress' | 'completed';
 export type TaskPriority = 'low' | 'medium' | 'high';
 
@@ -68,10 +62,7 @@ export interface UpdateTaskDTO extends Partial<CreateTaskDTO> {
   status?: TaskStatus;
 }
 
-// ============================
 // Types d'Achievements
-// ============================
-
 export interface Achievement {
   id: number;
   title: string;
@@ -92,10 +83,7 @@ export interface UserAchievement {
   achievement?: Achievement;
 }
 
-// ============================
 // Types de Récompenses
-// ============================
-
 export type RewardCategory = 'title' | 'avatar' | 'template' | 'theme' | 'badge' | 'feature';
 
 export interface Reward {
@@ -119,10 +107,7 @@ export interface UserReward {
   reward?: Reward;
 }
 
-// ============================
 // Types de Paramètres
-// ============================
-
 export type Theme = 'light' | 'dark' | 'auto';
 
 export interface UserSettings {
@@ -154,10 +139,7 @@ export interface UpdateSettingsDTO {
   template?: string;
 }
 
-// ============================
 // Types de Statistiques
-// ============================
-
 export interface UserStats {
   totalTasks: number;
   completedTasks: number;
@@ -176,10 +158,7 @@ export interface TaskStats {
   inProgress: number;
 }
 
-// ============================
 // Types de Réponses API
-// ============================
-
 export interface ApiSuccessResponse<T> {
   success: true;
   data: T;
@@ -195,10 +174,7 @@ export interface ApiErrorResponse {
 
 export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
 
-// ============================
 // Types de Pagination
-// ============================
-
 export interface PaginationParams {
   page?: number;
   limit?: number;
@@ -216,10 +192,7 @@ export interface PaginatedResponse<T> {
   };
 }
 
-// ============================
 // Types de Filtres
-// ============================
-
 export interface TaskFilters {
   status?: TaskStatus;
   priority?: TaskPriority;

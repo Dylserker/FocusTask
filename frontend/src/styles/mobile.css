@@ -1,6 +1,4 @@
-/* ============================================
-   STYLES GLOBAUX RESPONSIVE & MOBILE-FIRST
-   ============================================ */
+/* styles globaux responsive & mobile-first */
 
 :root {
   /* Couleurs */
@@ -39,10 +37,7 @@
   --transition-slow: 500ms ease;
 }
 
-/* ============================================
-   RESET & BASE STYLES
-   ============================================ */
-
+/* reset & base styles */
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
