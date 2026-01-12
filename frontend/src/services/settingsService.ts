@@ -14,6 +14,7 @@ interface BackendSettings {
   language: string;
   timezone: string | null;
   daily_goal: number | null;
+  template: string | null;
   created_at?: string;
   updated_at?: string;
 }
@@ -30,6 +31,7 @@ export interface UserSettings {
   dailyGoal?: number;
   dailyReminderTime?: string;
   timezone?: string;
+  template?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -43,6 +45,7 @@ export interface UpdateSettingsData {
   dailyGoal?: number;
   dailyReminderTime?: string;
   timezone?: string;
+  template?: string;
 }
 
 interface ApiEnvelope<T> {
@@ -63,6 +66,7 @@ const mapFromBackend = (settings: BackendSettings): UserSettings => ({
   dailyGoal: settings.daily_goal ?? undefined,
   dailyReminderTime: settings.daily_reminder_time ?? undefined,
   timezone: settings.timezone ?? undefined,
+  template: settings.template ?? undefined,
   createdAt: settings.created_at,
   updatedAt: settings.updated_at,
 });
@@ -94,6 +98,7 @@ export const settingsService = {
       language: data.language,
       timezone: data.timezone,
       dailyGoal: data.dailyGoal,
+      template: data.template,
     };
 
     const response = await api.patch<ApiEnvelope<BackendSettings>>('/settings', payload);

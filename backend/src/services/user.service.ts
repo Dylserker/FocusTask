@@ -79,6 +79,7 @@ export class UserService {
   }
 
   async deleteUser(userId: number): Promise<void> {
+    await pool.query('DELETE FROM Settings WHERE user_id = ?', [userId]);
     await pool.query('DELETE FROM Users WHERE id = ?', [userId]);
   }
 }

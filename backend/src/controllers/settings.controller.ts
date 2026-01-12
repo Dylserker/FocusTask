@@ -35,6 +35,7 @@ export class SettingsController {
       language,
       timezone,
       dailyGoal,
+      template,
     } = req.body;
 
     const updateData: any = {};
@@ -51,6 +52,7 @@ export class SettingsController {
     if (language !== undefined) updateData.language = language;
     if (timezone !== undefined) updateData.timezone = timezone;
     if (dailyGoal !== undefined) updateData.daily_goal = dailyGoal;
+    if (template !== undefined) updateData.template = template;
 
     // Récupérer les paramètres actuels avant la mise à jour
     const previousSettings = await settingsService.getSettings(req.userId);

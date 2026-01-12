@@ -78,6 +78,7 @@ export interface Settings {
   language: string;
   timezone: string;
   daily_goal: number;
+  template: string | null;
   created_at: Date;
   updated_at: Date;
 }

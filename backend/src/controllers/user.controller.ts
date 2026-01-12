@@ -2,6 +2,7 @@ import type { Response } from 'express';
 import type { AuthRequest } from '../middleware/authenticate';
 import AppError from '../utils/AppError';
 import userService from '../services/user.service';
+import bcrypt from 'bcrypt';
 
 export class UserController {
   async getProfile(req: AuthRequest, res: Response) {
@@ -137,6 +138,46 @@ export class UserController {
       data,
       pagination: { limit, offset },
     });
+  }
+
+  async changePassword(req: AuthRequest, res: Response) {
+    if (!req.userId) {
+      throw new AppError(401, 'Non authentifié');
+    }
+
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      throw new AppError(400, 'Mot de passe actuel et nouveau mot de passe requis');
+    }
+
+    const user = await userService.getUserById(req.userId);
+    if (!user) {
+      throw new AppError(404, 'Utilisateur non trouvé');
+    }
+
+    const isValid = await bcrypt.compare(currentPassword, user.password_hash);
+    if (!isValid) {
+      throw new AppError(400, 'Mot de passe actuel incorrect');
+    }
+
+    const hashed = await bcrypt.hash(newPassword, 10);
+    await userService.updateUser(req.userId, { password_hash: hashed });
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Mot de passe mis à jour',
+    });
+  }
+
+  async deleteAccount(req: AuthRequest, res: Response) {
+    if (!req.userId) {
+      throw new AppError(401, 'Non authentifié');
+    }
+
+    await userService.deleteUser(req.userId);
+
+    res.status(204).send();
   }
 }
 

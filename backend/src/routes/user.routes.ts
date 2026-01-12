@@ -21,6 +21,22 @@ router.patch('/profile', authenticate, async (req, res, next) => {
   }
 });
 
+router.post('/change-password', authenticate, async (req, res, next) => {
+  try {
+    await userController.changePassword(req, res);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.delete('/account', authenticate, async (req, res, next) => {
+  try {
+    await userController.deleteAccount(req, res);
+  } catch (error) {
+    next(error);
+  }
+});
+
 // Routes publiques
 router.get('/leaderboard', async (req, res, next) => {
   try {

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { settingsService, type UserSettings } from '../../services/settingsService';
+import { userService } from '../../services/userService';
 import './Settings.css';
 
 const Settings = () => {
@@ -11,9 +12,15 @@ const Settings = () => {
   const [dailyReminderTime, setDailyReminderTime] = useState('09:00');
   const [language, setLanguage] = useState('fr');
   const [timezone, setTimezone] = useState('Europe/Paris');
+  const [template, setTemplate] = useState('classic');
+
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isPasswordChanging, setIsPasswordChanging] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
@@ -37,6 +44,7 @@ const Settings = () => {
         setDailyReminderTime(settings.dailyReminderTime?.substring(0, 5) ?? '09:00');
         setLanguage(settings.language ?? 'fr');
         setTimezone(settings.timezone ?? 'Europe/Paris');
+        setTemplate(settings.template ?? 'classic');
       }
     } catch (err: any) {
       console.error('Erreur lors du chargement des paramètres:', err);
@@ -61,6 +69,7 @@ const Settings = () => {
         dailyReminderTime: dailyReminderTime,
         language: language,
         timezone: timezone,
+        template: template,
       });
 
       setSuccessMessage('Paramètres sauvegardés avec succès !');
@@ -74,6 +83,58 @@ const Settings = () => {
       setError('Erreur lors de la sauvegarde des paramètres');
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleChangePassword = async () => {
+    try {
+      setIsPasswordChanging(true);
+      setError(null);
+      setSuccessMessage(null);
+
+      if (!currentPassword || !newPassword) {
+        setError('Merci de renseigner les deux champs mot de passe');
+        setIsPasswordChanging(false);
+        return;
+      }
+
+      if (newPassword.length < 6) {
+        setError('Le nouveau mot de passe doit contenir au moins 6 caractères');
+        setIsPasswordChanging(false);
+        return;
+      }
+
+      await userService.changePassword({ currentPassword, newPassword });
+      setSuccessMessage('Mot de passe mis à jour avec succès');
+      setCurrentPassword('');
+      setNewPassword('');
+    } catch (err: any) {
+      console.error('Erreur lors du changement de mot de passe:', err);
+      setError('Impossible de changer le mot de passe');
+    } finally {
+      setIsPasswordChanging(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    const confirmed = window.confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est définitive.');
+    if (!confirmed) return;
+
+    try {
+      setIsDeleting(true);
+      setError(null);
+      setSuccessMessage(null);
+
+      await userService.deleteAccount();
+      setSuccessMessage('Compte supprimé. Redirection...');
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 800);
+    } catch (err: any) {
+      console.error('Erreur lors de la suppression du compte:', err);
+      setError('Impossible de supprimer le compte');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -227,6 +288,29 @@ const Settings = () => {
             <option value="Australia/Sydney">Australia/Sydney (UTC+11)</option>
           </select>
         </div>
+
+        <div className="setting-item">
+          <div className="setting-info">
+            <label htmlFor="template">Template</label>
+            <p>Choisir la mise en page préférée</p>
+          </div>
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <select
+              id="template"
+              value={template}
+              onChange={(e) => setTemplate(e.target.value)}
+              style={{ width: '200px', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
+            >
+              <option value="classic">Classique</option>
+              <option value="minimal">Minimal</option>
+              <option value="focus">Focus</option>
+              <option value="colorful">Coloré</option>
+            </select>
+            <button className="btn btn-secondary" onClick={handleSave} disabled={isSaving}>
+              Choisir la template
+            </button>
+          </div>
+        </div>
       </div>
 
       <div className="settings-section">
@@ -251,8 +335,43 @@ const Settings = () => {
 
       <div className="settings-section">
         <h2>Compte</h2>
-        <button className="btn btn-secondary">Changer le mot de passe</button>
-        <button className="btn btn-danger">Supprimer le compte</button>
+        <div className="setting-item">
+          <div className="setting-info">
+            <label htmlFor="currentPassword">Changer le mot de passe</label>
+            <p>Mettre à jour la sécurité de votre compte</p>
+          </div>
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+            <input
+              type="password"
+              id="currentPassword"
+              placeholder="Mot de passe actuel"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
+            />
+            <input
+              type="password"
+              id="newPassword"
+              placeholder="Nouveau mot de passe"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
+            />
+            <button className="btn btn-secondary" onClick={handleChangePassword} disabled={isPasswordChanging}>
+              {isPasswordChanging ? 'Mise à jour...' : 'Changer le mot de passe'}
+            </button>
+          </div>
+        </div>
+
+        <div className="setting-item">
+          <div className="setting-info">
+            <label>Supprimer le compte</label>
+            <p>Supprimer définitivement toutes vos données</p>
+          </div>
+          <button className="btn btn-danger" onClick={handleDeleteAccount} disabled={isDeleting}>
+            {isDeleting ? 'Suppression...' : 'Supprimer le compte'}
+          </button>
+        </div>
       </div>
 
       <button 

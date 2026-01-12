@@ -136,6 +136,7 @@ export interface UserSettings {
   dailyGoal?: number;
   dailyReminderTime?: string;
   timezone?: string;
+  template?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -150,6 +151,7 @@ export interface UpdateSettingsDTO {
   notificationsEnabled?: boolean;
   dailyReminderTime?: string;
   timezone?: string;
+  template?: string;
 }
 
 // ============================
