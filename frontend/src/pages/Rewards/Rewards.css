@@ -1,16 +1,21 @@
+/* ============================================
+   REWARDS PAGE - MOBILE FIRST
+   ============================================ */
+
 .rewards-container {
-  padding: 2rem;
+  width: 100%;
   max-width: 1400px;
   margin: 0 auto;
+  padding: 1rem;
 }
 
 .rewards-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .rewards-header h1 {
-  font-size: 2.5rem;
+  font-size: 1.75rem;
   margin-bottom: 0.5rem;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   -webkit-background-clip: text;
@@ -20,162 +25,190 @@
 
 .rewards-subtitle {
   color: #666;
-  font-size: 1.1rem;
-  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  margin-bottom: 1.25rem;
+  line-height: 1.5;
+  padding: 0 0.5rem;
 }
 
+/* Stats Cards - Mobile First */
 .rewards-stats {
-  display: flex;
-  gap: 1.5rem;
-  justify-content: center;
-  margin-top: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  margin: 1.25rem 0;
 }
 
 .stat-card {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 1.5rem 2rem;
+  padding: 1.25rem;
   border-radius: 12px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  min-width: 120px;
+  justify-content: space-between;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.stat-card:active {
+  transform: scale(0.98);
 }
 
 .stat-value {
   font-size: 2rem;
   font-weight: bold;
-  margin-bottom: 0.25rem;
 }
 
 .stat-label {
   font-size: 0.9rem;
-  opacity: 0.9;
+  opacity: 0.95;
+  font-weight: 500;
 }
 
+/* Actions */
 .rewards-actions {
   display: flex;
   justify-content: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .btn-unlock-auto {
   background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
   color: white;
   border: none;
-  padding: 1rem 2rem;
-  border-radius: 8px;
-  font-size: 1rem;
+  padding: 0.875rem 1.5rem;
+  border-radius: 25px;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 320px;
 }
 
-.btn-unlock-auto:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+.btn-unlock-auto:active {
+  transform: scale(0.98);
 }
 
+/* Category Filters */
 .category-filters {
   display: flex;
-  gap: 0.75rem;
-  justify-content: center;
+  gap: 0.5rem;
+  justify-content: flex-start;
   flex-wrap: wrap;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+  padding: 0 0.25rem;
 }
 
 .filter-btn {
-  padding: 0.75rem 1.5rem;
+  padding: 0.625rem 1rem;
   border: 2px solid #e0e0e0;
   background: white;
-  border-radius: 25px;
+  border-radius: 20px;
   cursor: pointer;
-  transition: all 0.3s;
-  font-size: 0.95rem;
+  transition: all 0.2s;
+  font-size: 0.85rem;
   font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.filter-btn:hover {
-  border-color: #667eea;
-  color: #667eea;
+.filter-btn:active {
+  transform: scale(0.95);
 }
 
 .filter-btn.active {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border-color: transparent;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
 
+/* Category Stats - Mobile First */
 .category-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1rem;
-  margin-bottom: 2rem;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .category-stat {
   background: white;
   padding: 1rem;
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  border: 2px solid #f0f0f0;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  transition: transform 0.2s;
+  justify-content: center;
+  gap: 0.75rem;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.category-stat:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.category-stat:active {
+  transform: scale(0.98);
 }
 
 .cat-emoji {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
+  flex-shrink: 0;
 }
 
 .cat-name {
   flex: 1;
-  font-weight: 500;
-  font-size: 0.9rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #333;
+  text-align: center;
 }
 
 .cat-progress {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  font-weight: 600;
+  padding: 0.375rem 0.875rem;
+  border-radius: 15px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
 }
 
+/* Rewards Sections */
 .rewards-section {
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
 }
 
 .section-title {
-  font-size: 1.75rem;
-  margin-bottom: 1.5rem;
+  font-size: 1.35rem;
+  margin-bottom: 1rem;
   color: #333;
+  font-weight: 700;
+  padding-left: 0.25rem;
 }
 
 .rewards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: 1fr;
+  gap: 1rem;
 }
 
 .reward-card {
   background: white;
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 1.25rem;
   border: 2px solid #e0e0e0;
-  transition: all 0.3s;
+  transition: all 0.2s;
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .reward-card::before {
@@ -187,10 +220,10 @@
   height: 4px;
   background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity 0.2s;
 }
 
-.reward-card:hover::before {
+.reward-card:active::before {
   opacity: 1;
 }
 
@@ -203,15 +236,10 @@
   opacity: 0.85;
 }
 
-.reward-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-}
-
 .reward-icon {
-  font-size: 3rem;
+  font-size: 2.5rem;
   text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .reward-icon.grayscale {
@@ -220,51 +248,59 @@
 }
 
 .reward-category {
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: 0.75rem;
+  font-weight: 700;
   text-transform: uppercase;
   color: #667eea;
   margin-bottom: 0.5rem;
   letter-spacing: 0.5px;
+  text-align: center;
 }
 
 .reward-title {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 700;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.625rem;
   color: #333;
+  text-align: center;
 }
 
 .reward-description {
   color: #666;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   line-height: 1.5;
   margin-bottom: 1rem;
   flex: 1;
+  text-align: center;
 }
 
 .reward-footer {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
+  align-items: center;
 }
 
 .reward-points {
-  font-weight: 600;
+  font-weight: 700;
   color: #f5576c;
   font-size: 0.95rem;
+  background: #fff0f3;
+  padding: 0.375rem 0.875rem;
+  border-radius: 15px;
 }
 
 .reward-achievement {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: #888;
   font-style: italic;
+  text-align: center;
 }
 
 .reward-status {
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
+  padding: 0.625rem 1rem;
+  border-radius: 8px;
   text-align: center;
   font-weight: 600;
   font-size: 0.9rem;
@@ -273,6 +309,7 @@
 .unlocked-status {
   background: #4caf50;
   color: white;
+  box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
 }
 
 .locked-status {
@@ -283,8 +320,8 @@
 .loading,
 .error {
   text-align: center;
-  padding: 3rem;
-  font-size: 1.1rem;
+  padding: 3rem 1rem;
+  font-size: 1rem;
 }
 
 .error {
@@ -293,40 +330,143 @@
 
 .no-rewards {
   text-align: center;
-  padding: 3rem;
+  padding: 3rem 1rem;
   color: #888;
-  font-size: 1.1rem;
+  font-size: 1rem;
+  background: white;
+  border-radius: 12px;
+  border: 2px dashed #e0e0e0;
 }
 
-@media (max-width: 768px) {
+/* ============================================
+   RESPONSIVE - TABLET & DESKTOP
+   ============================================ */
+
+@media (min-width: 480px) {
   .rewards-container {
-    padding: 1rem;
+    padding: 1.5rem;
   }
 
-  .rewards-header h1 {
-    font-size: 2rem;
-  }
-
-  .rewards-stats {
-    flex-direction: column;
+  .category-stats {
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
-  }
-
-  .stat-card {
-    width: 100%;
-  }
-
-  .category-filters {
-    gap: 0.5rem;
-  }
-
-  .filter-btn {
-    padding: 0.5rem 1rem;
-    font-size: 0.85rem;
+    max-width: 900px;
   }
 
   .rewards-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .rewards-container {
+    padding: 2rem;
+  }
+
+  .rewards-header h1 {
+    font-size: 2.5rem;
+  }
+
+  .rewards-subtitle {
+    font-size: 1.1rem;
+  }
+
+  /* Stats en ligne sur desktop */
+  .rewards-stats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .stat-card {
+    flex-direction: column;
+    padding: 1.5rem;
+    justify-content: center;
+  }
+
+  .stat-value {
+    margin-bottom: 0.25rem;
+  }
+
+  .btn-unlock-auto {
+    width: auto;
+    padding: 1rem 2rem;
+    font-size: 1rem;
+  }
+
+  .btn-unlock-auto:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .category-filters {
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .filter-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+  }
+
+  .filter-btn:hover {
+    border-color: #667eea;
+    color: #667eea;
+  }
+
+  .category-stats {
+    grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
+    max-width: 1200px;
+  }
+
+  .category-stat {
+    justify-content: flex-start;
+  }
+
+  .category-stat:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .cat-name {
+    text-align: left;
+  }
+
+  .section-title {
+    font-size: 1.75rem;
+  }
+
+  .rewards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .reward-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  .reward-card:hover::before {
+    opacity: 1;
+  }
+
+  .reward-icon {
+    font-size: 3rem;
+  }
+
+  .reward-category,
+  .reward-title,
+  .reward-description {
+    text-align: left;
+  }
+
+  .reward-footer {
+    align-items: flex-start;
+  }
+}
+
+@media (min-width: 1024px) {
+  .category-stats {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   }
 }
