@@ -18,8 +18,8 @@ export default defineConfig({
         background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait-primary',
-        scope: '/',
-        start_url: '/',
+        scope: '/FocusTask/',
+        start_url: '/FocusTask/',
         icons: [
           {
             src: '/icons/icon-72x72.png',
