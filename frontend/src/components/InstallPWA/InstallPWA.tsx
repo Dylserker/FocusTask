@@ -38,12 +38,6 @@ const InstallPWA = () => {
     
     const { outcome } = await deferredPrompt.userChoice;
     
-    if (outcome === 'accepted') {
-      console.log('✅ PWA installée');
-    } else {
-      console.log('❌ Installation annulée');
-    }
-
     setDeferredPrompt(null);
     setShowInstallButton(false);
   };

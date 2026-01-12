@@ -74,7 +74,6 @@ const Tasks = () => {
       setTasks(formattedTasks);
     } catch (err) {
       setError('Erreur lors du chargement des tâches');
-      console.error(err);
     } finally {
       setIsLoading(false);
     }
@@ -122,7 +121,6 @@ const Tasks = () => {
       }
     } catch (err) {
       setError('Erreur lors de la sauvegarde de la tâche');
-      console.error(err);
     }
   };
 
@@ -163,12 +161,11 @@ const Tasks = () => {
         try {
           await achievementService.checkAchievements();
         } catch (err) {
-          console.error('Erreur lors de la vérification des succès:', err);
+          // Erreur silencieuse
         }
       }
     } catch (err) {
       setError('Erreur lors de la mise à jour de la tâche');
-      console.error(err);
     }
   };
 
@@ -179,7 +176,6 @@ const Tasks = () => {
       setTasks(tasks.filter(task => task.id !== id));
     } catch (err) {
       setError('Erreur lors de la suppression de la tâche');
-      console.error(err);
     }
   };
 

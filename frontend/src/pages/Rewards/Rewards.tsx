@@ -53,7 +53,7 @@ const Rewards = () => {
         }),
         execute(() => rewardService.getRewardStats(), {
           onError: (err) => {
-            console.error('Erreur stats:', err);
+            // Erreur silencieuse
           },
         }),
       ]);
@@ -65,7 +65,6 @@ const Rewards = () => {
         setStats(rewardStats);
       }
     } catch (err) {
-      console.error('Erreur:', err);
       setError('Impossible de charger les récompenses');
     } finally {
       setLoading(false);
@@ -78,7 +77,6 @@ const Rewards = () => {
       await loadRewards();
       alert('Récompenses débloquées automatiquement !');
     } catch (err) {
-      console.error('Erreur:', err);
       alert('Erreur lors du déblocage automatique');
     }
   };

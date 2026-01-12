@@ -122,13 +122,7 @@ Si vous n'avez pas activé les notifications, veuillez nous contacter immédiate
 
     try {
       const info = await this.transporter.sendMail(mailOptions);
-      console.log('Email envoyé:', info.messageId);
-      // Pour le développement avec Ethereal
-      if (process.env.NODE_ENV !== 'production') {
-        console.log('Preview URL:', nodemailer.getTestMessageUrl(info));
-      }
     } catch (error) {
-      console.error('Erreur lors de l\'envoi de l\'email:', error);
       throw error;
     }
   }
@@ -210,12 +204,7 @@ Vous pouvez réactiver les notifications à tout moment depuis les paramètres d
 
     try {
       const info = await this.transporter.sendMail(mailOptions);
-      console.log('Email envoyé:', info.messageId);
-      if (process.env.NODE_ENV !== 'production') {
-        console.log('Preview URL:', nodemailer.getTestMessageUrl(info));
-      }
     } catch (error) {
-      console.error('Erreur lors de l\'envoi de l\'email:', error);
       throw error;
     }
   }

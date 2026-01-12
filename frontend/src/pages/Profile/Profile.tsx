@@ -20,12 +20,6 @@ type UserProfile = {
 const Profile = () => {
   const { user: authUser, userLevel, experiencePercent, refreshUserData } = useAuth();
   
-  console.log('🔍 Profile Debug - Context:', {
-    userLevel,
-    experiencePercent,
-    authUser
-  });
-  
   const [user, setUser] = useState<UserProfile>({
     username: 'Utilisateur',
     email: 'user@example.com',
@@ -37,12 +31,6 @@ const Profile = () => {
     currentStreak: 0,
     level: 1,
     experiencePercent: 0,
-  });
-  
-  console.log('🔍 Profile Debug - State:', {
-    userLevel: user.level,
-    experiencePercent: user.experiencePercent,
-    photoUrl: user.photoUrl
   });
   
   const [loading, setLoading] = useState(true);
@@ -71,7 +59,6 @@ const Profile = () => {
           experiencePercent: profileData.experiencePercent || experiencePercent,
         });
       } catch (error) {
-        console.error('Erreur lors du chargement du profil:', error);
         // Utiliser les données du contexte en cas d'erreur
         if (authUser) {
           setUser(prev => ({
@@ -132,7 +119,6 @@ const Profile = () => {
       // Message de succès
       alert('Profil mis à jour avec succès !');
     } catch (error: any) {
-      console.error('Erreur lors de la mise à jour du profil:', error);
       const errorMessage = error?.response?.data?.message || 'Erreur lors de la mise à jour du profil';
       alert(errorMessage);
     } finally {

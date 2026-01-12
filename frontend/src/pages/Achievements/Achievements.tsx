@@ -46,7 +46,6 @@ const Achievements = () => {
           () => achievementService.getUserAchievements(),
           {
             onError: (err) => {
-              console.error('Erreur lors du chargement des succès utilisateur:', err);
               // Continuer même si cela échoue
             },
           }
@@ -62,7 +61,6 @@ const Achievements = () => {
           setAchievements(enrichedAchievements);
         }
       } catch (err) {
-        console.error('Erreur lors du chargement des achievements:', err);
         setError('Impossible de charger les succès');
       } finally {
         setLoading(false);
@@ -91,7 +89,6 @@ const Achievements = () => {
         alert('Tous vos succès sont déjà débloqués !');
       }
     } catch (err) {
-      console.error('Erreur lors du déblocage des succès:', err);
       alert('Erreur lors du déblocage des succès');
     } finally {
       setUnlockingMissing(false);

@@ -81,12 +81,10 @@ export class TaskService {
 
     values.push(taskId);
     const query = `UPDATE Tasks SET ${updates.join(', ')} WHERE id = ?`;
-    console.log('DEBUG updateTask:', { query, values, taskId });
     
     try {
       await pool.query(query, values);
     } catch (error: any) {
-      console.error('ERROR in updateTask:', error.message, error.code);
       // Si erreur "colonne inconnue" pour status, retry sans status
       if (error.code === 'ER_BAD_FIELD_ERROR' && updates.some(u => u.includes('status'))) {
         const updatesWithoutStatus = updates.filter(u => !u.includes('status'));

@@ -70,7 +70,6 @@ export class SettingsService {
           }
         }
       } catch (error) {
-        console.error("Erreur lors de l'envoi de l'email:", error);
         // Ne pas faire échouer la mise à jour si l'email échoue
       }
     }

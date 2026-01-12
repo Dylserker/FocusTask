@@ -47,7 +47,6 @@ const Settings = () => {
         setTemplate(settings.template ?? 'classic');
       }
     } catch (err: any) {
-      console.error('Erreur lors du chargement des paramètres:', err);
       setError('Impossible de charger les paramètres');
     } finally {
       setIsLoading(false);
@@ -79,7 +78,6 @@ const Settings = () => {
         setSuccessMessage(null);
       }, 3000);
     } catch (err: any) {
-      console.error('Erreur lors de la sauvegarde des paramètres:', err);
       setError('Erreur lors de la sauvegarde des paramètres');
     } finally {
       setIsSaving(false);
@@ -109,7 +107,6 @@ const Settings = () => {
       setCurrentPassword('');
       setNewPassword('');
     } catch (err: any) {
-      console.error('Erreur lors du changement de mot de passe:', err);
       setError('Impossible de changer le mot de passe');
     } finally {
       setIsPasswordChanging(false);
@@ -131,7 +128,6 @@ const Settings = () => {
         window.location.href = '/login';
       }, 800);
     } catch (err: any) {
-      console.error('Erreur lors de la suppression du compte:', err);
       setError('Impossible de supprimer le compte');
     } finally {
       setIsDeleting(false);

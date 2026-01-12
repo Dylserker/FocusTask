@@ -51,11 +51,6 @@ export function useApi<T = any>() {
         options.onError(error);
       }
       
-      // Optionnel: Afficher un toast d'erreur
-      if (options?.showErrorToast !== false) {
-        console.error('API Error:', error.message);
-      }
-      
       return null;
     }
   }, []);

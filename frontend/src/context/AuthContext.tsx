@@ -39,9 +39,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (isAuth) {
           // Récupérer les données utilisateur depuis le backend
           const userData = await authService.getCurrentUser();
-          console.log('🔍 AuthContext initAuth - userData reçue:', userData);
-          console.log('🔍 AuthContext initAuth - experiencePercent:', userData.experiencePercent);
-          console.log('🔍 AuthContext initAuth - photoUrl:', userData.photoUrl);
           setUser(userData);
           setIsAuthenticated(true);
           setUserName(userData.username);
@@ -50,7 +47,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setPhotoUrl(userData.photoUrl || '');
         }
       } catch (error) {
-        console.error('Erreur lors de la vérification de l\'authentification:', error);
         const status = (error as any)?.response?.status;
 
         // Si le token est invalide, on nettoie; sinon on garde l'état local pour éviter un flash inutile
@@ -98,7 +94,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         throw new Error(response.message || 'Échec de la connexion');
       }
     } catch (error) {
-      console.error('Erreur lors de la connexion:', error);
       throw error;
     }
   };
@@ -128,7 +123,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         throw new Error(response.message || 'Échec de l\'inscription');
       }
     } catch (error) {
-      console.error('Erreur lors de l\'inscription:', error);
       throw error;
     }
   };
@@ -146,16 +140,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const refreshUserData = async () => {
     try {
       const userData = await authService.getCurrentUser();
-      console.log('🔍 AuthContext refreshUserData - userData reçue:', userData);
-      console.log('🔍 AuthContext refreshUserData - experiencePercent:', userData.experiencePercent);
-      console.log('🔍 AuthContext refreshUserData - photoUrl:', userData.photoUrl);
       setUser(userData);
       setUserName(userData.username);
       setUserLevel(userData.level);
       setExperiencePercent(userData.experiencePercent || 0);
       setPhotoUrl(userData.photoUrl || '');
     } catch (error) {
-      console.error('Erreur lors du rafraîchissement des données utilisateur:', error);
+      // Erreur silencieuse
     }
   };
 

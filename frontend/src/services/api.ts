@@ -38,24 +38,16 @@ apiClient.interceptors.response.use(
       switch (status) {
         case 401:
           // On ne force plus la redirection : on laisse le contexte d'auth gérer
-          console.warn('401 non authentifié — token possiblement expiré');
           break;
         case 403:
-          console.error('Accès interdit');
           break;
         case 404:
-          console.error('Ressource non trouvée');
           break;
         case 500:
-          console.error('Erreur serveur interne');
           break;
         default:
-          console.error('Erreur:', error.response.data);
+          break;
       }
-    } else if (error.request) {
-      console.error('Pas de réponse du serveur');
-    } else {
-      console.error('Erreur:', error.message);
     }
 
     return Promise.reject(error);
