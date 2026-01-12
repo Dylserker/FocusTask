@@ -4,10 +4,8 @@ import { taskService } from '../../services/taskService';
 import { achievementService } from '../../services/achievementService';
 import './Tasks.css';
 
-// Fonction utilitaire pour formater une date au format YYYY-MM-DD en heure locale
 const formatDateLocal = (dateInput?: string | Date): string => {
   if (!dateInput) {
-    // Si pas de date, utiliser la date locale actuelle
     const now = new Date();
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -15,15 +13,11 @@ const formatDateLocal = (dateInput?: string | Date): string => {
     return `${year}-${month}-${day}`;
   }
   
-  // Si c'est une string, la traiter comme YYYY-MM-DD ou ISO
   if (typeof dateInput === 'string') {
-    // Si c'est déjà au format YYYY-MM-DD, retourner tel quel
     if (/^\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
       return dateInput;
     }
-    // Si c'est du format ISO (avec T), extraire la date locale
     if (dateInput.includes('T')) {
-      // Parse en Date pour la convertir en heure locale
       const date = new Date(dateInput);
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -52,7 +46,6 @@ const Tasks = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Charger les tâches au montage du composant
   useEffect(() => {
     loadTasks();
   }, []);
@@ -91,7 +84,6 @@ const Tasks = () => {
     try {
       setError(null);
       if (editingTask) {
-        // Modification
         await taskService.updateTask(editingTask.id, {
           title: taskData.name,
           description: taskData.description,
@@ -106,7 +98,6 @@ const Tasks = () => {
         ));
         setEditingTask(null);
       } else {
-        // Création
         const newTask = await taskService.createTask({
           title: taskData.name,
           description: taskData.description,
@@ -151,7 +142,6 @@ const Tasks = () => {
       const task = tasks.find(t => t.id === id);
       if (!task) return;
 
-      // Cycle: pending → in_progress → completed → pending
       let newStatus: 'pending' | 'in_progress' | 'completed' = 'pending';
       if (task.status === 'pending') {
         newStatus = 'in_progress';
@@ -169,13 +159,11 @@ const Tasks = () => {
         t.id === id ? { ...t, status: newStatus } : t
       ));
 
-      // Si la tâche est marquée comme complétée, vérifier les succès
       if (newStatus === 'completed') {
         try {
           await achievementService.checkAchievements();
         } catch (err) {
           console.error('Erreur lors de la vérification des succès:', err);
-          // On ne lance pas une erreur, juste on log
         }
       }
     } catch (err) {
