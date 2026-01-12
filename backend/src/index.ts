@@ -24,16 +24,28 @@ initializeDatabase().catch((error) => {
 });
 
 // Configuration CORS sécurisée
-const allowedOrigins = process.env.FRONTEND_URL?.split(',') || ['http://localhost:5173'];
+const allowedOrigins = process.env.FRONTEND_URL
+  ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
+  : ['http://localhost:5173'];
+
+console.log('🔍 CORS Allowed Origins:', allowedOrigins);
+console.log('🔍 NODE_ENV:', process.env.NODE_ENV);
 
 app.use(cors({
   origin: (origin, callback) => {
     // Permet les requêtes sans origin (comme les apps mobiles ou Postman)
-    if (!origin) return callback(null, true);
+    if (!origin) {
+      console.log('✅ CORS: No origin provided');
+      return callback(null, true);
+    }
+    
+    console.log('🔍 CORS Check:', { origin, allowed: allowedOrigins });
     
     if (allowedOrigins.includes(origin)) {
+      console.log('✅ CORS: Origin allowed:', origin);
       callback(null, true);
     } else {
+      console.log('❌ CORS: Origin denied:', origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
