@@ -44,7 +44,14 @@ export class SettingsController {
     if (language !== undefined) updateData.language = language;
     if (timezone !== undefined) updateData.timezone = timezone;
 
-    await settingsService.updateSettings(req.userId, updateData);
+    // Récupérer les paramètres actuels avant la mise à jour
+    const previousSettings = await settingsService.getSettings(req.userId);
+
+    await settingsService.updateSettings(
+      req.userId,
+      updateData,
+      previousSettings
+    );
 
     const settings = await settingsService.getSettings(req.userId);
 

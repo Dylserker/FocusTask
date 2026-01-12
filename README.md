@@ -15,6 +15,7 @@ FocusTask est une application full-stack qui transforme la gestion de tâches en
 - 📊 **Statistiques** - Suivez votre progression et vos performances
 - 🔐 **Authentification** - Système sécurisé avec JWT
 - ⚙️ **Paramètres** - Personnalisez votre expérience
+- 📧 **Notifications Email** - Recevez des emails lors de l'activation/désactivation des notifications
 
 ## 🛠️ Technologies
 
@@ -82,7 +83,22 @@ cd backend && npm run dev
 cd frontend && npm run dev
 ```
 
-6. **Accéder à l'application**
+6. **Configuration des Emails (Optionnel)**
+
+Pour activer l'envoi d'emails lors de l'activation/désactivation des notifications:
+- Consultez le guide détaillé: [backend/EMAIL_SETUP.md](backend/EMAIL_SETUP.md)
+- Pour un test rapide, utilisez [Ethereal Email](https://ethereal.email) (emails de test)
+
+```bash
+# Exemple de configuration dans backend/.env
+SMTP_HOST=smtp.ethereal.email
+SMTP_PORT=587
+SMTP_USER=votre-username-ethereal
+SMTP_PASS=votre-password-ethereal
+SMTP_FROM="FocusTask" <noreply@focustask.com>
+```
+
+7. **Accéder à l'application**
 - Frontend: http://localhost:5173
 - Backend API: http://localhost:3000/api
 
