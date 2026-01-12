@@ -97,9 +97,9 @@ export class TaskController {
       throw new AppError(403, 'Accès refusé');
     }
 
-    // Bloquer la modification si la tâche est complétée (sauf si on veut juste changer le status)
-    if (task.status === 'completed' && !req.body.status) {
-      throw new AppError(400, 'Impossible de modifier une tâche complétée');
+    // Si la tâche est déjà complétée, on bloque tout changement d'état (statut figé)
+    if (task.status === 'completed') {
+      return res.status(409).json({ status: 'error', message: 'Tâche déjà complétée', data: task });
     }
 
     // Convertir les nouveaux champs aux anciens s'ils sont présents
@@ -128,7 +128,7 @@ export class TaskController {
 
     const updatedTask = await taskService.getTaskById(id);
 
-    res.status(200).json({
+    return res.status(200).json({
       status: 'success',
       message: 'Tâche mise à jour avec succès',
       data: updatedTask,
@@ -157,14 +157,14 @@ export class TaskController {
     }
 
     if (task.completed) {
-      throw new AppError(400, 'Tâche déjà complétée');
+      return res.status(409).json({ status: 'error', message: 'Tâche déjà complétée', data: task });
     }
 
     await taskService.completeTask(id);
 
     const updatedTask = await taskService.getTaskById(id);
 
-    res.status(200).json({
+    return res.status(200).json({
       status: 'success',
       message: 'Tâche complétée avec succès',
       data: updatedTask,
