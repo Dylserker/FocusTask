@@ -10,6 +10,8 @@ export interface UserSettings {
   emailNotifications: boolean;
   soundEffects: boolean;
   dailyGoal?: number;
+  dailyReminderTime?: string;
+  timezone?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -21,6 +23,9 @@ export interface UpdateSettingsData {
   emailNotifications?: boolean;
   soundEffects?: boolean;
   dailyGoal?: number;
+  dailyReminderTime?: string;
+  timezone?: string;
+  notificationsEnabled?: boolean;
 }
 
 // Service de gestion des paramètres
@@ -37,7 +42,7 @@ export const settingsService = {
    * Mise à jour des paramètres de l'utilisateur
    */
   async updateSettings(data: UpdateSettingsData): Promise<UserSettings> {
-    const response = await api.put<{ success: boolean; data: UserSettings }>('/settings', data);
+    const response = await api.patch<{ success: boolean; data: UserSettings }>('/settings', data);
     return response.data;
   },
 
@@ -49,3 +54,4 @@ export const settingsService = {
     return response.data;
   },
 };
+

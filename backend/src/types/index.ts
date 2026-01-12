@@ -71,10 +71,13 @@ export interface Settings {
   id: number;
   user_id: number;
   notifications_enabled: boolean;
+  email_notifications: boolean;
+  sound_effects: boolean;
   daily_reminder_time: string;
   theme: string;
   language: string;
   timezone: string;
+  daily_goal: number;
   created_at: Date;
   updated_at: Date;
 }

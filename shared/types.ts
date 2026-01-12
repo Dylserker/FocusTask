@@ -134,6 +134,8 @@ export interface UserSettings {
   emailNotifications: boolean;
   soundEffects: boolean;
   dailyGoal?: number;
+  dailyReminderTime?: string;
+  timezone?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -145,6 +147,9 @@ export interface UpdateSettingsDTO {
   emailNotifications?: boolean;
   soundEffects?: boolean;
   dailyGoal?: number;
+  notificationsEnabled?: boolean;
+  dailyReminderTime?: string;
+  timezone?: string;
 }
 
 // ============================

@@ -4,8 +4,14 @@ import './Settings.css';
 
 const Settings = () => {
   const [notifications, setNotifications] = useState(true);
+  const [emailNotifications, setEmailNotifications] = useState(false);
+  const [soundEffects, setSoundEffects] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
-  const [emailUpdates, setEmailUpdates] = useState(false);
+  const [dailyGoal, setDailyGoal] = useState(5);
+  const [dailyReminderTime, setDailyReminderTime] = useState('09:00');
+  const [language, setLanguage] = useState('fr');
+  const [timezone, setTimezone] = useState('Europe/Paris');
+  
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -24,8 +30,13 @@ const Settings = () => {
       
       if (settings) {
         setNotifications(settings.notifications ?? true);
+        setEmailNotifications(settings.emailNotifications ?? false);
+        setSoundEffects(settings.soundEffects ?? true);
         setDarkMode(settings.theme === 'dark');
-        setEmailUpdates(settings.emailNotifications ?? false);
+        setDailyGoal(settings.dailyGoal ?? 5);
+        setDailyReminderTime(settings.dailyReminderTime?.substring(0, 5) ?? '09:00');
+        setLanguage(settings.language ?? 'fr');
+        setTimezone(settings.timezone ?? 'Europe/Paris');
       }
     } catch (err: any) {
       console.error('Erreur lors du chargement des paramètres:', err);
@@ -43,8 +54,13 @@ const Settings = () => {
 
       await settingsService.updateSettings({
         notifications: notifications,
+        emailNotifications: emailNotifications,
+        soundEffects: soundEffects,
         theme: darkMode ? 'dark' : 'light',
-        emailNotifications: emailUpdates,
+        dailyGoal: dailyGoal,
+        dailyReminderTime: dailyReminderTime,
+        language: language,
+        timezone: timezone,
       });
 
       setSuccessMessage('Paramètres sauvegardés avec succès !');
@@ -59,10 +75,6 @@ const Settings = () => {
     } finally {
       setIsSaving(false);
     }
-  };
-
-  const handleNotificationChange = (checked: boolean) => {
-    setNotifications(checked);
   };
 
   if (isLoading) {
@@ -102,7 +114,8 @@ const Settings = () => {
       )}
 
       <div className="settings-section">
-        <h2>Préférences</h2>
+        <h2>Notifications et Alertes</h2>
+        
         <div className="setting-item">
           <div className="setting-info">
             <label htmlFor="notifications">Notifications</label>
@@ -113,12 +126,59 @@ const Settings = () => {
             id="notifications"
             className="toggle"
             checked={notifications}
-            onChange={(e) => handleNotificationChange(e.target.checked)}
+            onChange={(e) => setNotifications(e.target.checked)}
           />
         </div>
+
         <div className="setting-item">
           <div className="setting-info">
-            <label htmlFor="darkMode">Mode sombre</label>
+            <label htmlFor="emailNotifications">Notifications par Email</label>
+            <p>Recevoir des emails sur vos progrès hebdomadaires</p>
+          </div>
+          <input
+            type="checkbox"
+            id="emailNotifications"
+            className="toggle"
+            checked={emailNotifications}
+            onChange={(e) => setEmailNotifications(e.target.checked)}
+          />
+        </div>
+
+        <div className="setting-item">
+          <div className="setting-info">
+            <label htmlFor="soundEffects">Effets Sonores</label>
+            <p>Activer les sons lors des notifications</p>
+          </div>
+          <input
+            type="checkbox"
+            id="soundEffects"
+            className="toggle"
+            checked={soundEffects}
+            onChange={(e) => setSoundEffects(e.target.checked)}
+          />
+        </div>
+
+        <div className="setting-item">
+          <div className="setting-info">
+            <label htmlFor="dailyReminderTime">Heure du Rappel Quotidien</label>
+            <p>À quelle heure souhaitez-vous le rappel?</p>
+          </div>
+          <input
+            type="time"
+            id="dailyReminderTime"
+            value={dailyReminderTime}
+            onChange={(e) => setDailyReminderTime(e.target.value)}
+            style={{ width: '120px', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
+          />
+        </div>
+      </div>
+
+      <div className="settings-section">
+        <h2>Préférences d'Interface</h2>
+
+        <div className="setting-item">
+          <div className="setting-info">
+            <label htmlFor="darkMode">Mode Sombre</label>
             <p>Activer le thème sombre</p>
           </div>
           <input
@@ -129,17 +189,62 @@ const Settings = () => {
             onChange={(e) => setDarkMode(e.target.checked)}
           />
         </div>
+
         <div className="setting-item">
           <div className="setting-info">
-            <label htmlFor="emailUpdates">Mises à jour par email</label>
-            <p>Recevoir des emails sur vos progrès hebdomadaires</p>
+            <label htmlFor="language">Langue</label>
+            <p>Choisir la langue de l'interface</p>
+          </div>
+          <select
+            id="language"
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+            style={{ width: '120px', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
+          >
+            <option value="fr">Français</option>
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="de">Deutsch</option>
+          </select>
+        </div>
+
+        <div className="setting-item">
+          <div className="setting-info">
+            <label htmlFor="timezone">Fuseau Horaire</label>
+            <p>Sélectionner votre fuseau horaire</p>
+          </div>
+          <select
+            id="timezone"
+            value={timezone}
+            onChange={(e) => setTimezone(e.target.value)}
+            style={{ width: '200px', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
+          >
+            <option value="Europe/Paris">Europe/Paris (UTC+1)</option>
+            <option value="Europe/London">Europe/London (UTC+0)</option>
+            <option value="America/New_York">America/New_York (UTC-5)</option>
+            <option value="America/Los_Angeles">America/Los_Angeles (UTC-8)</option>
+            <option value="Asia/Tokyo">Asia/Tokyo (UTC+9)</option>
+            <option value="Australia/Sydney">Australia/Sydney (UTC+11)</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="settings-section">
+        <h2>Objectifs</h2>
+
+        <div className="setting-item">
+          <div className="setting-info">
+            <label htmlFor="dailyGoal">Objectif Quotidien</label>
+            <p>Nombre de tâches à compléter par jour</p>
           </div>
           <input
-            type="checkbox"
-            id="emailUpdates"
-            className="toggle"
-            checked={emailUpdates}
-            onChange={(e) => setEmailUpdates(e.target.checked)}
+            type="number"
+            id="dailyGoal"
+            min="1"
+            max="50"
+            value={dailyGoal}
+            onChange={(e) => setDailyGoal(parseInt(e.target.value) || 5)}
+            style={{ width: '80px', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
           />
         </div>
       </div>

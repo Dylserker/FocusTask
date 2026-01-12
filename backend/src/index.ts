@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { errorHandler } from './middleware/errorHandler';
 import { requestLogger } from './middleware/requestLogger';
+import { initializeDatabase } from './config/database-init';
 import authRoutes from './routes/auth.routes';
 import userRoutes from './routes/user.routes';
 import taskRoutes from './routes/task.routes';
@@ -15,6 +16,12 @@ dotenv.config();
 
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
+
+// Initialiser la base de données au démarrage
+initializeDatabase().catch((error) => {
+  console.error('Erreur lors de l\'initialisation de la base de données:', error);
+  process.exit(1);
+});
 
 // Configuration CORS sécurisée
 const allowedOrigins = process.env.FRONTEND_URL?.split(',') || ['http://localhost:5173'];
