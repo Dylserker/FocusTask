@@ -83,12 +83,6 @@ app.get('/api/health', (_req, res) => {
 // Error handling
 app.use(errorHandler);
 
-// Export for Vercel serverless
-export default app;
-
-// Local development server
-if (process.env.NODE_ENV !== 'production') {
-  app.listen(PORT, () => {
-    console.log(`🚀 Serveur démarré sur le port ${PORT}`);
-  });
-}
+app.listen(PORT, () => {
+  console.log(`🚀 Serveur démarré sur le port ${PORT}`);
+});
