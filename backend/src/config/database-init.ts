@@ -1,12 +1,34 @@
 import pool from '../config/database';
 
 /**
+ * Attend que la base de données soit disponible
+ */
+async function waitForDatabase(maxRetries = 30, delayMs = 1000): Promise<void> {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      await pool.query('SELECT 1');
+      console.log('✅ Connexion à la base de données établie');
+      return;
+    } catch (error: any) {
+      console.log(`⏳ Attente de la base de données... (tentative ${i + 1}/${maxRetries})`);
+      if (i === maxRetries - 1) {
+        throw new Error(`Impossible de se connecter à la base de données après ${maxRetries} tentatives`);
+      }
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+    }
+  }
+}
+
+/**
  * Initialise la structure de la base de données
  * Ajoute les colonnes manquantes à la table Settings si elles n'existent pas
  */
 export async function initializeDatabase() {
   try {
     console.log('🔧 Initialisation de la structure de base de données...');
+
+    // Attendre que la base de données soit disponible
+    await waitForDatabase();
 
     // Ajouter les colonnes manquantes à la table Settings
     const migrations = [

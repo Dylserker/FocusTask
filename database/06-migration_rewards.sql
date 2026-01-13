@@ -24,8 +24,7 @@ CREATE TABLE Rewards (
     icon TEXT,
     points_required INT NOT NULL DEFAULT 0,
     achievement_id INT UNSIGNED,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (achievement_id) REFERENCES Achievements(id) ON DELETE SET NULL
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE UserRewards (
@@ -44,20 +43,20 @@ CREATE TABLE UserRewards (
 
 INSERT INTO Rewards (title, description, category, icon, points_required, achievement_id) VALUES
 -- Titres débutants (0-100 points)
-('Novice', 'Votre premier titre. Montrez que vous avez commencé votre aventure.', 'title', '🌱', 10, 1),
-('Débutant Motivé', 'Un titre pour ceux qui prennent leur productivité au sérieux.', 'title', '💪', 50, 2),
-('Organisateur', 'Vous savez gérer vos tâches efficacement.', 'title', '📋', 100, 21),
+('Novice', 'Votre premier titre. Montrez que vous avez commencé votre aventure.', 'title', '🌱', 10, NULL),
+('Débutant Motivé', 'Un titre pour ceux qui prennent leur productivité au sérieux.', 'title', '💪', 50, NULL),
+('Organisateur', 'Vous savez gérer vos tâches efficacement.', 'title', '📋', 100, NULL),
 
 -- Titres intermédiaires (100-500 points)
-('Sprint Master', 'Pour les marathoniens de la productivité.', 'title', '🏃‍♂️', 150, 3),
-('Perfectionniste', 'Vous visez toujours l\'excellence.', 'title', '✨', 300, 22),
-('Stratège', 'Un maître de la planification stratégique.', 'title', '🎯', 500, 23),
+('Sprint Master', 'Pour les marathoniens de la productivité.', 'title', '🏃‍♂️', 150, NULL),
+('Perfectionniste', 'Vous visez toujours l\'excellence.', 'title', '✨', 300, NULL),
+('Stratège', 'Un maître de la planification stratégique.', 'title', '🎯', 500, NULL),
 
 -- Titres avancés (500+ points)
-('Légende Vivante', 'Votre productivité est légendaire.', 'title', '👑', 1000, 24),
-('Maître du Feu', 'Vous domptez les défis les plus ardus.', 'title', '🔥', 250, 28),
-('Grand Sage', 'Votre sagesse en productivité inspire tous.', 'title', '🧙‍♂️', 500, 42),
-('Titan Infatigable', 'Rien ne peut arrêter votre progression.', 'title', '⚔️', 2000, 43);
+('Légende Vivante', 'Votre productivité est légendaire.', 'title', '👑', 1000, NULL),
+('Maître du Feu', 'Vous domptez les défis les plus ardus.', 'title', '🔥', 250, NULL),
+('Grand Sage', 'Votre sagesse en productivité inspire tous.', 'title', '🧙‍♂️', 500, NULL),
+('Titan Infatigable', 'Rien ne peut arrêter votre progression.', 'title', '⚔️', 2000, NULL);
 
 -- ============================================
 -- RÉCOMPENSES - AVATARS / PHOTOS DE PROFIL
@@ -65,19 +64,19 @@ INSERT INTO Rewards (title, description, category, icon, points_required, achiev
 
 INSERT INTO Rewards (title, description, category, icon, points_required, achievement_id) VALUES
 -- Avatars débutants
-('Avatar Étoile', 'Un avatar brillant pour commencer votre aventure.', 'avatar', '⭐', 25, 1),
-('Avatar Fusée', 'Décollage vers la productivité !', 'avatar', '🚀', 100, 21),
-('Avatar Diamant', 'Brillez comme un diamant.', 'avatar', '💎', 250, 32),
+('Avatar Étoile', 'Un avatar brillant pour commencer votre aventure.', 'avatar', '⭐', 25, NULL),
+('Avatar Fusée', 'Décollage vers la productivité !', 'avatar', '🚀', 100, NULL),
+('Avatar Diamant', 'Brillez comme un diamant.', 'avatar', '💎', 250, NULL),
 
 -- Avatars intermédiaires
-('Avatar Phoenix', 'Renaissez de vos cendres chaque jour.', 'avatar', '🦅', 500, 23),
-('Avatar Couronne', 'Portez la couronne de la productivité.', 'avatar', '👑', 1000, 24),
-('Avatar Dragon', 'Puissant et majestueux.', 'avatar', '🐉', 1500, 30),
+('Avatar Phoenix', 'Renaissez de vos cendres chaque jour.', 'avatar', '🦅', 500, NULL),
+('Avatar Couronne', 'Portez la couronne de la productivité.', 'avatar', '👑', 1000, NULL),
+('Avatar Dragon', 'Puissant et majestueux.', 'avatar', '🐉', 1500, NULL),
 
 -- Avatars avancés
-('Avatar Galaxie', 'L\'infini à portée de main.', 'avatar', '🌌', 2000, 43),
-('Avatar Licorne', 'Rare et magique, comme votre productivité.', 'avatar', '🦄', 1000, 37),
-('Avatar Trophée', 'Le symbole ultime de la victoire.', 'avatar', '🏆', 2000, 43);
+('Avatar Galaxie', 'L\'infini à portée de main.', 'avatar', '🌌', 2000, NULL),
+('Avatar Licorne', 'Rare et magique, comme votre productivité.', 'avatar', '🦄', 1000, NULL),
+('Avatar Trophée', 'Le symbole ultime de la victoire.', 'avatar', '🏆', 2000, NULL);
 
 -- ============================================
 -- RÉCOMPENSES - TEMPLATES / MODÈLES
@@ -85,14 +84,14 @@ INSERT INTO Rewards (title, description, category, icon, points_required, achiev
 
 INSERT INTO Rewards (title, description, category, icon, points_required, achievement_id) VALUES
 -- Templates de tâches
-('Template Focus', 'Modèle de tâche pour sessions de concentration profonde.', 'template', '🎯', 50, 2),
-('Template Sprint', 'Modèle pour sprints de productivité rapides.', 'template', '⚡', 150, 3),
-('Template Projet', 'Modèle pour gérer des projets complexes.', 'template', '📊', 300, 22),
+('Template Focus', 'Modèle de tâche pour sessions de concentration profonde.', 'template', '🎯', 50, NULL),
+('Template Sprint', 'Modèle pour sprints de productivité rapides.', 'template', '⚡', 150, NULL),
+('Template Projet', 'Modèle pour gérer des projets complexes.', 'template', '📊', 300, NULL),
 
 -- Templates de journées
-('Template Matinal', 'Routine matinale pour démarrer du bon pied.', 'template', '🌅', 30, 6),
-('Template Semaine', 'Planification hebdomadaire optimisée.', 'template', '📅', 200, 35),
-('Template Objectifs', 'Définissez et atteignez vos objectifs mensuels.', 'template', '🎯', 500, 23);
+('Template Matinal', 'Routine matinale pour démarrer du bon pied.', 'template', '🌅', 30, NULL),
+('Template Semaine', 'Planification hebdomadaire optimisée.', 'template', '📅', 200, NULL),
+('Template Objectifs', 'Définissez et atteignez vos objectifs mensuels.', 'template', '🎯', 500, NULL);
 
 -- ============================================
 -- RÉCOMPENSES - THÈMES
@@ -100,11 +99,11 @@ INSERT INTO Rewards (title, description, category, icon, points_required, achiev
 
 INSERT INTO Rewards (title, description, category, icon, points_required, achievement_id) VALUES
 -- Thèmes de couleurs
-('Thème Midnight', 'Interface sombre et élégante pour travailler la nuit.', 'theme', '🌙', 100, 44),
-('Thème Aurora', 'Couleurs inspirées des aurores boréales.', 'theme', '🌈', 200, 35),
-('Thème Forest', 'Des tons apaisants de vert forêt.', 'theme', '🌲', 300, 22),
-('Thème Ocean', 'Bleu profond et relaxant comme l\'océan.', 'theme', '🌊', 400, 37),
-('Thème Golden', 'Luxe et élégance en or.', 'theme', '✨', 1000, 24);
+('Thème Midnight', 'Interface sombre et élégante pour travailler la nuit.', 'theme', '🌙', 100, NULL),
+('Thème Aurora', 'Couleurs inspirées des aurores boréales.', 'theme', '🌈', 200, NULL),
+('Thème Forest', 'Des tons apaisants de vert forêt.', 'theme', '🌲', 300, NULL),
+('Thème Ocean', 'Bleu profond et relaxant comme l\'océan.', 'theme', '🌊', 400, NULL),
+('Thème Golden', 'Luxe et élégance en or.', 'theme', '✨', 1000, NULL);
 
 -- ============================================
 -- RÉCOMPENSES - BADGES
@@ -112,11 +111,11 @@ INSERT INTO Rewards (title, description, category, icon, points_required, achiev
 
 INSERT INTO Rewards (title, description, category, icon, points_required, achievement_id) VALUES
 -- Badges spéciaux
-('Badge Premier Pas', 'Votre premier badge de réussite.', 'badge', '🥉', 10, 1),
-('Badge Série', 'Pour votre constance quotidienne.', 'badge', '🔗', 50, 35),
-('Badge Vitesse', 'Tâches complétées à vitesse éclair.', 'badge', '⚡', 200, 3),
-('Badge Excellence', 'Pour votre quête d\'excellence.', 'badge', '🥇', 500, 23),
-('Badge Légende', 'Vous êtes entré dans la légende.', 'badge', '🏅', 1000, 24);
+('Badge Premier Pas', 'Votre premier badge de réussite.', 'badge', '🥉', 10, NULL),
+('Badge Série', 'Pour votre constance quotidienne.', 'badge', '🔗', 50, NULL),
+('Badge Vitesse', 'Tâches complétées à vitesse éclair.', 'badge', '⚡', 200, NULL),
+('Badge Excellence', 'Pour votre quête d\'excellence.', 'badge', '🥇', 500, NULL),
+('Badge Légende', 'Vous êtes entré dans la légende.', 'badge', '🏅', 1000, NULL);
 
 -- ============================================
 -- RÉCOMPENSES - FONCTIONNALITÉS
@@ -124,9 +123,9 @@ INSERT INTO Rewards (title, description, category, icon, points_required, achiev
 
 INSERT INTO Rewards (title, description, category, icon, points_required, achievement_id) VALUES
 -- Features débloquables
-('Statistiques Avancées', 'Accédez à des statistiques détaillées de productivité.', 'feature', '📊', 150, 3),
-('Mode Focus', 'Activez le mode concentration sans distraction.', 'feature', '🎯', 300, 22),
-('Export de Données', 'Exportez vos tâches et statistiques.', 'feature', '💾', 500, 23);
+('Statistiques Avancées', 'Accédez à des statistiques détaillées de productivité.', 'feature', '📊', 150, NULL),
+('Mode Focus', 'Activez le mode concentration sans distraction.', 'feature', '🎯', 300, NULL),
+('Export de Données', 'Exportez vos tâches et statistiques.', 'feature', '💾', 500, NULL);
 
 -- ============================================
 -- TRIGGER - Déblocage automatique des récompenses
