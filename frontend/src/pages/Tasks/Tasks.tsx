@@ -140,6 +140,9 @@ const Tasks = () => {
       const task = tasks.find(t => t.id === id);
       if (!task) return;
 
+      // Empêcher le basculement des tâches complétées
+      if (task.status === 'completed') return;
+
       let newStatus: 'pending' | 'in_progress' | 'completed' = 'pending';
       if (task.status === 'pending') {
         newStatus = 'in_progress';
@@ -295,6 +298,7 @@ const Tasks = () => {
                           <button
                             className={`task-status-button status-${task.status}`}
                             onClick={() => toggleTask(task.id)}
+                            disabled={task.status === 'completed'}
                             title={`État: ${task.status === 'pending' ? 'À faire' : task.status === 'in_progress' ? 'En cours' : 'Terminé'}`}
                           >
                             {task.status === 'pending' ? '○' : task.status === 'in_progress' ? '◐' : '●'}
