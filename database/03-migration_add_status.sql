@@ -15,20 +15,5 @@ END;
 -- Créer un index sur le nouveau champ
 ALTER TABLE Tasks ADD INDEX idx_status (user_id, status);
 
--- Optionnel: Ajouter un trigger pour synchroniser 'completed' et 'status' à chaque mise à jour
--- Cela permet de garder les deux colonnes synchronisées
-DELIMITER $$
-
-CREATE TRIGGER task_status_sync_update 
-BEFORE UPDATE ON Tasks 
-FOR EACH ROW 
-BEGIN
-    -- Si status change, mettre à jour completed en conséquence
-    IF NEW.status = 'completed' THEN
-        SET NEW.completed = true;
-    ELSE
-        SET NEW.completed = false;
-    END IF;
-END$$
-
-DELIMITER ;
+-- Note: Le trigger a été supprimé car il causait des erreurs de récursion.
+-- La synchronisation entre 'status' et 'completed' est maintenant gérée au niveau application.

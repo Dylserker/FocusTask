@@ -142,13 +142,16 @@ const Tasks = () => {
       const task = tasks.find(t => t.id === id);
       if (!task) return;
 
+      // Une fois completed, la tâche ne peut plus changer de statut
+      if (task.status === 'completed') {
+        return;
+      }
+
       let newStatus: 'pending' | 'in_progress' | 'completed' = 'pending';
       if (task.status === 'pending') {
         newStatus = 'in_progress';
       } else if (task.status === 'in_progress') {
         newStatus = 'completed';
-      } else {
-        newStatus = 'pending';
       }
 
       await taskService.updateTask(id, {
