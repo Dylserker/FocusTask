@@ -11,15 +11,6 @@ const Header = () => {
   const { isAuthenticated, userName, userLevel, experiencePercent, photoUrl, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
-  console.log('🔍 Header Debug:', {
-    userName,
-    userLevel,
-    experiencePercent,
-    photoUrl,
-    photoUrlType: typeof photoUrl,
-    photoUrlLength: photoUrl?.length
-  });
-  
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
 
   // Fermer le menu lors du changement de route
