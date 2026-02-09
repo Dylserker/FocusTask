@@ -1,0 +1,316 @@
+/* ============================================
+   THEME OVERRIDES (DARK MODE)
+   ============================================ */
+
+html[data-theme='dark'] body,
+html[data-theme='dark'] .app,
+html[data-theme='dark'] .main-content {
+  background: var(--bg);
+  color: var(--text);
+}
+
+html[data-theme='dark'] input,
+html[data-theme='dark'] select,
+html[data-theme='dark'] textarea {
+  background: var(--input-bg);
+  color: var(--input-text);
+  border-color: var(--input-border);
+}
+
+html[data-theme='dark'] input::placeholder,
+html[data-theme='dark'] textarea::placeholder {
+  color: #7f8999;
+}
+
+html[data-theme='dark'] .btn-secondary {
+  background: #232a36;
+  color: var(--text);
+}
+
+html[data-theme='dark'] .btn-secondary:hover {
+  background: #2a3340;
+}
+
+/* Header */
+html[data-theme='dark'] .header {
+  background: var(--surface);
+  border-right-color: var(--border);
+}
+
+html[data-theme='dark'] .menu-toggle {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: var(--shadow-md);
+}
+
+html[data-theme='dark'] .profile-username {
+  color: var(--text);
+}
+
+html[data-theme='dark'] .nav a {
+  color: var(--text-muted);
+}
+
+html[data-theme='dark'] .nav a:hover {
+  background: var(--surface-alt);
+  color: var(--text);
+}
+
+html[data-theme='dark'] .nav a.active {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* Settings */
+html[data-theme='dark'] .settings-container h1 {
+  color: var(--text);
+}
+
+html[data-theme='dark'] .settings-section {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+html[data-theme='dark'] .settings-section h2 {
+  color: var(--text);
+  border-bottom-color: var(--border);
+}
+
+html[data-theme='dark'] .setting-item {
+  border-bottom-color: var(--border);
+}
+
+html[data-theme='dark'] .setting-info label {
+  color: var(--text);
+}
+
+html[data-theme='dark'] .setting-info p {
+  color: var(--text-muted);
+}
+
+html[data-theme='dark'] .setting-input,
+html[data-theme='dark'] .setting-select {
+  background: var(--input-bg);
+  color: var(--input-text);
+  border-color: var(--input-border);
+}
+
+html[data-theme='dark'] .alert-error {
+  background-color: #3a1c1c;
+  color: #f5b5b5;
+  border-color: #5a2a2a;
+}
+
+html[data-theme='dark'] .alert-success {
+  background-color: #1a2b20;
+  color: #b7e4c7;
+  border-color: #284b35;
+}
+
+html[data-theme='dark'] .toggle {
+  background: #2a3340;
+}
+
+html[data-theme='dark'] .toggle:checked {
+  background: var(--primary);
+}
+
+/* Tasks */
+html[data-theme='dark'] .tasks-header h1,
+html[data-theme='dark'] .week-info {
+  color: var(--text);
+}
+
+html[data-theme='dark'] .week-navigation {
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+html[data-theme='dark'] .day-column {
+  background: var(--surface);
+}
+
+html[data-theme='dark'] .task-card {
+  background: var(--surface-alt);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+html[data-theme='dark'] .task-card.status-pending {
+  background: var(--surface-alt);
+  border-color: var(--border);
+}
+
+html[data-theme='dark'] .task-card.status-in_progress {
+  background: #3a3321;
+  border-color: #b58a3b;
+  color: #f0e4c2;
+}
+
+html[data-theme='dark'] .task-card.status-completed {
+  background: #1f3327;
+  border-color: #2f7a50;
+  color: #cfead8;
+}
+
+html[data-theme='dark'] .task-card.status-completed .task-card-title {
+  color: #9aa3b2;
+}
+
+html[data-theme='dark'] .btn-today {
+  background: #232a36;
+  color: var(--text);
+}
+
+html[data-theme='dark'] .btn-today:hover {
+  background: #2a3340;
+}
+
+/* Home */
+html[data-theme='dark'] .hero h1,
+html[data-theme='dark'] .updates-header h2,
+html[data-theme='dark'] .about h2,
+html[data-theme='dark'] .update-title {
+  color: var(--text);
+}
+
+html[data-theme='dark'] .hero p,
+html[data-theme='dark'] .feature-card p,
+html[data-theme='dark'] .about p,
+html[data-theme='dark'] .update-desc,
+html[data-theme='dark'] .update-date {
+  color: var(--text-muted);
+}
+
+html[data-theme='dark'] .feature-card {
+  background: var(--surface);
+}
+
+html[data-theme='dark'] .feature-card h3 {
+  color: var(--text);
+}
+
+html[data-theme='dark'] .update-card {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+html[data-theme='dark'] .badge {
+  background: #222a36;
+  color: #cfd6ff;
+  border-color: #2f3a4d;
+}
+
+/* Achievements */
+html[data-theme='dark'] .achievements-container h1,
+html[data-theme='dark'] .achievement-card h3 {
+  color: var(--text);
+}
+
+html[data-theme='dark'] .achievements-progress,
+html[data-theme='dark'] .achievement-card p {
+  color: var(--text-muted);
+}
+
+html[data-theme='dark'] .achievement-card {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+/* Rewards */
+html[data-theme='dark'] .rewards-subtitle {
+  color: var(--text-muted);
+}
+
+html[data-theme='dark'] .category-stat,
+html[data-theme='dark'] .reward-card {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+html[data-theme='dark'] .cat-name,
+html[data-theme='dark'] .section-title,
+html[data-theme='dark'] .reward-title {
+  color: var(--text);
+}
+
+html[data-theme='dark'] .reward-description {
+  color: var(--text-muted);
+}
+
+html[data-theme='dark'] .filter-btn {
+  background: var(--surface-alt);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+html[data-theme='dark'] .filter-btn:hover {
+  border-color: var(--primary);
+  color: #cfd6ff;
+}
+
+/* Profile */
+html[data-theme='dark'] .profile-container h1,
+html[data-theme='dark'] .profile-card h2,
+html[data-theme='dark'] .stat-value {
+  color: var(--text);
+}
+
+html[data-theme='dark'] .profile-name,
+html[data-theme='dark'] .profile-email,
+html[data-theme='dark'] .stat-label {
+  color: var(--text-muted);
+}
+
+html[data-theme='dark'] .profile-card,
+html[data-theme='dark'] .stat-card {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+/* Auth */
+html[data-theme='dark'] .auth-container {
+  background: linear-gradient(135deg, #10131a 0%, #1a2230 100%);
+}
+
+html[data-theme='dark'] .auth-card {
+  background: var(--surface);
+}
+
+html[data-theme='dark'] .auth-card h1,
+html[data-theme='dark'] .form-group label {
+  color: var(--text);
+}
+
+html[data-theme='dark'] .auth-link {
+  color: var(--text-muted);
+}
+
+/* Modal */
+html[data-theme='dark'] .modal-content {
+  background: var(--surface);
+}
+
+html[data-theme='dark'] .modal-header {
+  border-bottom-color: var(--border);
+}
+
+html[data-theme='dark'] .modal-header h2,
+html[data-theme='dark'] .form-group label {
+  color: var(--text);
+}
+
+html[data-theme='dark'] .modal-close {
+  color: #9aa3b2;
+}
+
+html[data-theme='dark'] .modal-close:hover {
+  background-color: var(--surface-alt);
+  color: var(--text);
+}
+
+html[data-theme='dark'] .modal-actions {
+  border-top-color: var(--border);
+}

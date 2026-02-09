@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { settingsService, type UserSettings } from '../../services/settingsService';
 import { userService } from '../../services/userService';
+import { applyTheme, setStoredTheme } from '../../utils/theme';
 import './Settings.css';
 
 const Settings = () => {
@@ -28,6 +29,10 @@ const Settings = () => {
   useEffect(() => {
     loadSettings();
   }, []);
+
+  useEffect(() => {
+    applyTheme(darkMode ? 'dark' : 'light');
+  }, [darkMode]);
 
   const loadSettings = async () => {
     try {
@@ -70,6 +75,8 @@ const Settings = () => {
         timezone: timezone,
         template: template,
       });
+
+      setStoredTheme(darkMode ? 'dark' : 'light');
 
       setSuccessMessage('Paramètres sauvegardés avec succès !');
       
@@ -239,7 +246,7 @@ const Settings = () => {
         <div className="setting-item">
           <div className="setting-info">
             <label htmlFor="darkMode">Mode Sombre</label>
-            <p>Activer le thème sombre (bientôt disponible)</p>
+            <p>Activer le thème sombre</p>
           </div>
           <div className="setting-control">
             <input

@@ -14,7 +14,7 @@ body {
 
 .app {
   min-height: 100vh;
-  background: #f5f7fa;
+  background: var(--bg);
   display: flex;
 }
 

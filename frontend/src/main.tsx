@@ -5,6 +5,7 @@ import App from './App.tsx';
 
 import './index.css';
 import './styles/mobile.css';
+import './styles/theme.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
