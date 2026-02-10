@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { settingsService, type UserSettings } from '../../services/settingsService';
 import { userService } from '../../services/userService';
 import { applyTheme, setStoredTheme } from '../../utils/theme';
+import i18n from '../../i18n';
 import './Settings.css';
 
 const Settings = () => {
+  const { t } = useTranslation();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [emailNotifications, setEmailNotifications] = useState(false);
   const [soundEffects, setSoundEffects] = useState(true);
@@ -50,12 +53,25 @@ const Settings = () => {
         setLanguage(settings.language ?? 'fr');
         setTimezone(settings.timezone ?? 'Europe/Paris');
         setTemplate(settings.template ?? 'classic');
+        
+        // Synchroniser la langue avec i18n
+        const settingsLanguage = settings.language ?? 'fr';
+        setLanguage(settingsLanguage);
+        if (i18n.language !== settingsLanguage) {
+          await i18n.changeLanguage(settingsLanguage);
+        }
       }
     } catch (err: any) {
       setError('Impossible de charger les paramètres');
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleLanguageChange = async (newLanguage: string) => {
+    setLanguage(newLanguage);
+    // Changer la langue immédiatement dans l'interface
+    await i18n.changeLanguage(newLanguage);
   };
 
   const handleSave = async () => {
@@ -78,7 +94,7 @@ const Settings = () => {
 
       setStoredTheme(darkMode ? 'dark' : 'light');
 
-      setSuccessMessage('Paramètres sauvegardés avec succès !');
+      setSuccessMessage(t('settings.alerts.saveSuccess'));
       
       // Effacer le message de succès après 3 secondes
       setTimeout(() => {
@@ -270,7 +286,7 @@ const Settings = () => {
               id="language"
               className="setting-select"
               value={language}
-              onChange={(e) => setLanguage(e.target.value)}
+              onChange={(e) => handleLanguageChange(e.target.value)}
               aria-label="Sélectionner la langue"
             >
               <option value="fr">🇫🇷 Français</option>

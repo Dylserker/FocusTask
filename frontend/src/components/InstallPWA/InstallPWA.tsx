@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import './InstallPWA.css';
 
 interface BeforeInstallPromptEvent extends Event {
@@ -7,6 +8,7 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 const InstallPWA = () => {
+  const { t } = useTranslation();
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showInstallButton, setShowInstallButton] = useState(false);
 
@@ -65,14 +67,14 @@ const InstallPWA = () => {
       <div className="install-pwa-content">
         <div className="install-pwa-icon">📱</div>
         <div className="install-pwa-text">
-          <strong>Installer FocusTask</strong>
-          <p>Accédez rapidement à vos tâches depuis votre écran d'accueil</p>
+          <strong>{t('installPwa.title')}</strong>
+          <p>{t('installPwa.description')}</p>
         </div>
         <div className="install-pwa-actions">
           <button onClick={handleInstallClick} className="btn-install">
-            Installer
+            {t('installPwa.install')}
           </button>
-          <button onClick={handleDismiss} className="btn-dismiss" aria-label="Fermer">
+          <button onClick={handleDismiss} className="btn-dismiss" aria-label={t('installPwa.dismiss')}>
             ✕
           </button>
         </div>

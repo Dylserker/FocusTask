@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { authService, type AuthUser } from '../services/authService';
 import { userService } from '../services/userService';
+import i18n from '../i18n';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -22,9 +23,10 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // État initial basé sur le localStorage pour éviter le flash de déconnexion au F5
   const storedUser = authService.getStoredUser();
+  const defaultUserName = i18n.t('common.userDefault');
   const [isAuthenticated, setIsAuthenticated] = useState(authService.isAuthenticated());
   const [user, setUser] = useState<AuthUser | null>(storedUser);
-  const [userName, setUserName] = useState(storedUser?.username || 'Utilisateur');
+  const [userName, setUserName] = useState(storedUser?.username || defaultUserName);
   const [userLevel, setUserLevel] = useState(storedUser?.level || 1);
   const [experiencePercent, setExperiencePercent] = useState(storedUser?.experiencePercent || 0);
   const [photoUrl, setPhotoUrl] = useState(storedUser?.photoUrl || '');
@@ -54,7 +56,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           authService.logout();
           setIsAuthenticated(false);
           setUser(null);
-          setUserName('Utilisateur');
+          setUserName(defaultUserName);
           setUserLevel(1);
           setExperiencePercent(0);
           setPhotoUrl('');
@@ -91,7 +93,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setExperiencePercent(userData.experiencePercent);
         setPhotoUrl(userData.photoUrl);
       } else {
-        throw new Error(response.message || 'Échec de la connexion');
+        throw new Error(response.message || i18n.t('auth.errors.loginFailed'));
       }
     } catch (error) {
       throw error;
@@ -120,7 +122,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setExperiencePercent(userData.experiencePercent);
         setPhotoUrl(userData.photoUrl);
       } else {
-        throw new Error(response.message || 'Échec de l\'inscription');
+        throw new Error(response.message || i18n.t('auth.errors.registerFailed'));
       }
     } catch (error) {
       throw error;
@@ -131,7 +133,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     authService.logout();
     setIsAuthenticated(false);
     setUser(null);
-    setUserName('Utilisateur');
+    setUserName(defaultUserName);
     setUserLevel(1);
     setExperiencePercent(0);
     setPhotoUrl('');

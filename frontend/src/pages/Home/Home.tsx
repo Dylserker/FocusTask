@@ -1,49 +1,39 @@
+import { useTranslation } from 'react-i18next';
 import './Home.css';
 
-const updates = [
-  {
-    date: '08/01/2026',
-    title: 'Navigation verticale',
-    description: 'Ajout d’une barre latérale pour une navigation plus rapide.',
-  },
-  {
-    date: '07/01/2026',
-    title: 'Pages de base',
-    description: 'Création des pages Login, Register, Tasks, Achievements, Profile, Settings.',
-  },
-];
-
 const Home = () => {
+  const { t } = useTranslation();
+  
   return (
     <div className="home-container">
       <section className="hero">
-        <h1>FocusTask</h1>
-        <p>Organisez vos tâches, suivez vos progrès, atteignez vos objectifs</p>
+        <h1>{t('home.heroTitle')}</h1>
+        <p>{t('home.heroSubtitle')}</p>
         {/* CTA retirés à la demande : pas de boutons Connexion/Inscription */}
       </section>
 
       <section className="features">
         <div className="feature-card">
-          <h3>📝 Gestion de tâches</h3>
-          <p>Créez et organisez vos tâches efficacement</p>
+          <h3>{t('home.features.tasksTitle')}</h3>
+          <p>{t('home.features.tasksDesc')}</p>
         </div>
         <div className="feature-card">
-          <h3>🏆 Récompenses</h3>
-          <p>Débloquez des succès en accomplissant vos objectifs</p>
+          <h3>{t('home.features.rewardsTitle')}</h3>
+          <p>{t('home.features.rewardsDesc')}</p>
         </div>
         <div className="feature-card">
-          <h3>📊 Suivi de progression</h3>
-          <p>Visualisez vos progrès et restez motivé</p>
+          <h3>{t('home.features.progressTitle')}</h3>
+          <p>{t('home.features.progressDesc')}</p>
         </div>
       </section>
 
       <section className="updates">
         <div className="updates-header">
-          <h2>Mises à jour</h2>
-          <span className="badge">Journal</span>
+          <h2>{t('home.updates.title')}</h2>
+          <span className="badge">{t('home.updates.badge')}</span>
         </div>
         <div className="updates-list">
-          {updates.map((u, idx) => (
+          {(t('home.updates.items', { returnObjects: true }) as Array<{ date: string; title: string; description: string }>).map((u, idx) => (
             <article key={idx} className="update-card">
               <div className="update-meta">
                 <span className="update-date">{u.date}</span>
@@ -56,10 +46,9 @@ const Home = () => {
       </section>
 
       <section className="about">
-        <h2>À propos</h2>
+        <h2>{t('home.about.title')}</h2>
         <p>
-          FocusTask est une application minimaliste pour rester concentré sur vos objectifs
-          quotidiens. Ajoutez des tâches, suivez vos progrès et célébrez vos succès.
+          {t('home.about.description')}
         </p>
       </section>
     </div>

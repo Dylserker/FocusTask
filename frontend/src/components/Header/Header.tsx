@@ -1,11 +1,13 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useAuth } from '../../context/AuthContext';
 
 import './Header.css';
 
 const Header = () => {
+  const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const { isAuthenticated, userName, userLevel, experiencePercent, photoUrl, logout } = useAuth();
@@ -63,7 +65,7 @@ const Header = () => {
       <button 
         className={`menu-toggle ${isMenuOpen ? 'active' : ''}`} 
         onClick={toggleMenu}
-        aria-label="Toggle menu"
+        aria-label={t('header.toggleMenu')}
       >
         <span></span>
         <span></span>
@@ -122,26 +124,26 @@ const Header = () => {
               </Link>
               <div className="profile-info">
                 <div className="profile-username">{userName}</div>
-                <div className="profile-level">Niveau {userLevel}</div>
+                <div className="profile-level">{t('common.level', { level: userLevel })}</div>
               </div>
             </div>
           </div>
           <nav className="nav">
             <Link to="/tasks" className={location.pathname === '/tasks' ? 'active' : ''}>
-              📝 Tâches
+              {t('header.nav.tasks')}
             </Link>
             <Link to="/achievements" className={location.pathname === '/achievements' ? 'active' : ''}>
-              🏆 Succès
+              {t('header.nav.achievements')}
             </Link>
             <Link to="/rewards" className={location.pathname === '/rewards' ? 'active' : ''}>
-              🎁 Récompenses
+              {t('header.nav.rewards')}
             </Link>
             <Link to="/settings" className={location.pathname === '/settings' ? 'active' : ''}>
-              ⚙️ Paramètres
+              {t('header.nav.settings')}
             </Link>
           </nav>
           <button className="btn-logout" onClick={handleLogout}>
-            Déconnexion
+            {t('header.logout')}
           </button>
         </div>
       </header>

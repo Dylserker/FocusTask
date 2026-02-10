@@ -8,6 +8,7 @@ import { AuthProvider } from './context/AuthContext';
 import { authService } from './services/authService';
 import { settingsService } from './services/settingsService';
 import { applyTheme, getStoredTheme, setStoredTheme } from './utils/theme';
+import i18n from './i18n';
 
 import './App.css';
 
@@ -31,7 +32,7 @@ function App() {
     const storedTheme = getStoredTheme() ?? 'light';
     applyTheme(storedTheme);
 
-    const syncTheme = async () => {
+    const syncSettings = async () => {
       if (!authService.isAuthenticated()) return;
 
       try {
@@ -39,12 +40,17 @@ function App() {
         const theme = settings?.theme ?? 'light';
         applyTheme(theme);
         setStoredTheme(theme);
+
+        const language = settings?.language;
+        if (language) {
+          await i18n.changeLanguage(language);
+        }
       } catch {
-        // Pas bloquant : on conserve le thème local
+        // Pas bloquant : on conserve les paramètres locaux
       }
     };
 
-    syncTheme();
+    syncSettings();
   }, []);
 
   return (

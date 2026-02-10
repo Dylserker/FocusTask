@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import './TaskModal.css';
 
 // Fonction pour obtenir la date locale au format YYYY-MM-DD
@@ -27,6 +28,7 @@ interface TaskModalProps {
 }
 
 const TaskModal = ({ isOpen, onClose, onSave, task }: TaskModalProps) => {
+  const { t } = useTranslation();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [difficulty, setDifficulty] = useState<'facile' | 'moyen' | 'difficile'>('moyen');
@@ -73,19 +75,19 @@ const TaskModal = ({ isOpen, onClose, onSave, task }: TaskModalProps) => {
     <div className="modal-overlay" onClick={handleClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>{task ? 'Modifier la tâche' : 'Créer une tâche'}</h2>
+          <h2>{task ? t('taskModal.editTitle') : t('taskModal.createTitle')}</h2>
           <button className="modal-close" onClick={handleClose}>×</button>
         </div>
 
         <form onSubmit={handleSubmit} className="modal-form">
           <div className="form-group">
-            <label htmlFor="task-name">Nom de la tâche *</label>
+            <label htmlFor="task-name">{t('taskModal.nameLabel')}</label>
             <input
               id="task-name"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Ex: Apprendre React"
+              placeholder={t('taskModal.namePlaceholder')}
               required
               autoFocus
               disabled={isCompleted}
@@ -93,19 +95,19 @@ const TaskModal = ({ isOpen, onClose, onSave, task }: TaskModalProps) => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="task-description">Description</label>
+            <label htmlFor="task-description">{t('taskModal.descriptionLabel')}</label>
             <textarea
               id="task-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Décrivez votre tâche..."
+              placeholder={t('taskModal.descriptionPlaceholder')}
               rows={4}
               disabled={isCompleted}
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="task-difficulty">Difficulté *</label>
+            <label htmlFor="task-difficulty">{t('taskModal.difficultyLabel')}</label>
             <select
               id="task-difficulty"
               value={difficulty}
@@ -113,14 +115,14 @@ const TaskModal = ({ isOpen, onClose, onSave, task }: TaskModalProps) => {
               required
               disabled={isCompleted}
             >
-              <option value="facile">Facile</option>
-              <option value="moyen">Moyen</option>
-              <option value="difficile">Difficile</option>
+              <option value="facile">{t('common.difficulty.easy')}</option>
+              <option value="moyen">{t('common.difficulty.medium')}</option>
+              <option value="difficile">{t('common.difficulty.hard')}</option>
             </select>
           </div>
 
           <div className="form-group">
-            <label htmlFor="task-date">Date *</label>
+            <label htmlFor="task-date">{t('taskModal.dateLabel')}</label>
             <input
               id="task-date"
               type="date"
@@ -132,25 +134,25 @@ const TaskModal = ({ isOpen, onClose, onSave, task }: TaskModalProps) => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="task-status">Progression</label>
+            <label htmlFor="task-status">{t('taskModal.statusLabel')}</label>
             <select
               id="task-status"
               value={status}
               onChange={(e) => setStatus(e.target.value as 'pending' | 'in_progress' | 'completed')}
               disabled={isCompleted}
             >
-              <option value="pending">○ À faire</option>
-              <option value="in_progress">◐ En cours</option>
-              <option value="completed">● Terminé</option>
+              <option value="pending">○ {t('common.status.pending')}</option>
+              <option value="in_progress">◐ {t('common.status.in_progress')}</option>
+              <option value="completed">● {t('common.status.completed')}</option>
             </select>
           </div>
 
           <div className="modal-actions">
             <button type="button" onClick={handleClose} className="btn btn-secondary">
-              Annuler
+              {t('common.actions.cancel')}
             </button>
             <button type="submit" className="btn btn-primary" disabled={isCompleted}>
-              {task ? 'Modifier' : 'Créer'}
+              {task ? t('taskModal.submitEdit') : t('taskModal.submitCreate')}
             </button>
           </div>
         </form>

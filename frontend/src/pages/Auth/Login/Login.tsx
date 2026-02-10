@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import { useAuth } from '../../../context/AuthContext';
 
 import '../Auth.css';
 
 const Login = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -17,7 +19,7 @@ const Login = () => {
     e.preventDefault();
     
     if (!email || !password) {
-      setError('Veuillez remplir tous les champs');
+      setError(t('auth.errors.fillAllFields'));
       return;
     }
 
@@ -32,7 +34,7 @@ const Login = () => {
       navigate('/');
     } catch (err: any) {
       // Gérer les erreurs de connexion
-      const errorMessage = err?.response?.data?.message || err?.message || 'Erreur lors de la connexion';
+      const errorMessage = err?.response?.data?.message || err?.message || t('auth.errors.loginFailed');
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -42,39 +44,39 @@ const Login = () => {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h1>Connexion</h1>
+        <h1>{t('auth.loginTitle')}</h1>
         <form onSubmit={handleSubmit}>
           {error && <div className="error-message">{error}</div>}
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">{t('auth.emailLabel')}</label>
             <input
               type="email"
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              placeholder="votre@email.com"
+              placeholder={t('auth.placeholders.email')}
               disabled={loading}
             />
           </div>
           <div className="form-group">
-            <label htmlFor="password">Mot de passe</label>
+            <label htmlFor="password">{t('auth.passwordLabel')}</label>
             <input
               type="password"
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              placeholder="••••••••"
+              placeholder={t('auth.placeholders.password')}
               disabled={loading}
             />
           </div>
           <button type="submit" className="btn btn-primary btn-full" disabled={loading}>
-            {loading ? 'Connexion en cours...' : 'Se connecter'}
+            {loading ? t('auth.loginLoading') : t('auth.loginButton')}
           </button>
         </form>
         <p className="auth-link">
-          Pas encore de compte ? <Link to="/register">Inscrivez-vous</Link>
+          {t('auth.linkNoAccount')} <Link to="/register">{t('auth.linkSignup')}</Link>
         </p>
       </div>
     </div>
