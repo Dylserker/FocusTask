@@ -293,6 +293,43 @@ html[data-theme='dark'] .modal-content {
   background: var(--surface);
 }
 
+html[data-theme='dark'] .profile-modal__content {
+  background: #2a3340;
+}
+
+html[data-theme='dark'] .profile-modal__header {
+  border-bottom-color: var(--border);
+}
+
+html[data-theme='dark'] .profile-modal__header h2 {
+  color: var(--text);
+}
+
+html[data-theme='dark'] .profile-modal__close {
+  color: #9aa3b2;
+}
+
+html[data-theme='dark'] .profile-modal__close:hover {
+  background: var(--surface-alt);
+  color: var(--text);
+}
+
+html[data-theme='dark'] .profile-modal__group label,
+html[data-theme='dark'] .profile-modal__preview-info,
+html[data-theme='dark'] .profile-modal__thumb span {
+  color: var(--text);
+}
+
+html[data-theme='dark'] .profile-modal__group input {
+  background: var(--input-bg);
+  color: var(--input-text);
+  border-color: var(--input-border);
+}
+
+html[data-theme='dark'] .profile-modal__group input::placeholder {
+  color: #7f8999;
+}
+
 html[data-theme='dark'] .modal-header {
   border-bottom-color: var(--border);
 }
