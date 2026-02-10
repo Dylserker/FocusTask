@@ -18,6 +18,11 @@ interface UserAchievement extends Achievement {
   unlockedAt?: string;
 }
 
+interface UnlockedAchievement {
+  id: number;
+  achievement_id?: number;
+}
+
 const Achievements = () => {
   const [achievements, setAchievements] = useState<UserAchievement[]>([]);
   const [loading, setLoading] = useState(true);
@@ -35,8 +40,8 @@ const Achievements = () => {
         const allAchievements = await execute(
           () => achievementService.getAllAchievements(),
           {
-            onError: (err) => {
-              setError(err.message || 'Erreur lors du chargement des succès');
+            onError: (_err) => {
+              setError(_err.message || 'Erreur lors du chargement des succès');
             },
           }
         );
@@ -45,7 +50,7 @@ const Achievements = () => {
         const userAchievements = await execute(
           () => achievementService.getUserAchievements(),
           {
-            onError: (err) => {
+            onError: (_err) => {
               // Continuer même si cela échoue
             },
           }
@@ -53,8 +58,8 @@ const Achievements = () => {
 
         // Créer une liste enrichie avec statut d'unlock
         if (allAchievements) {
-          const unlockedIds = new Set(userAchievements?.map((ua) => ua.achievement_id || ua.id) || []);
-          const enrichedAchievements = allAchievements.map((achievement) => ({
+          const unlockedIds = new Set(userAchievements?.map((ua: UnlockedAchievement) => ua.achievement_id || ua.id) || []);
+          const enrichedAchievements = allAchievements.map((achievement: Achievement) => ({
             ...achievement,
             unlocked: unlockedIds.has(achievement.id),
           }));
@@ -76,10 +81,10 @@ const Achievements = () => {
       const result = await achievementService.unlockMissingAchievements();
 
       setAchievements((prev) =>
-        prev.map((achievement) => ({
+        prev.map((achievement: UserAchievement) => ({
           ...achievement,
           unlocked:
-            result.newlyUnlocked.some((ua) => ua.id === achievement.id) || achievement.unlocked,
+            result.newlyUnlocked.some((ua: UnlockedAchievement) => ua.id === achievement.id) || achievement.unlocked,
         }))
       );
 
@@ -95,7 +100,7 @@ const Achievements = () => {
     }
   };
 
-  const unlockedCount = achievements.filter((a) => a.unlocked).length;
+  const unlockedCount = achievements.filter((a: UserAchievement) => a.unlocked).length;
 
   if (loading) {
     return (
@@ -133,7 +138,7 @@ const Achievements = () => {
       </div>
 
       <div className="achievements-grid">
-        {achievements.map((achievement) => (
+        {achievements.map((achievement: UserAchievement) => (
           <div
             key={achievement.id}
             className={`achievement-card ${achievement.unlocked ? 'unlocked' : 'locked'}`}
